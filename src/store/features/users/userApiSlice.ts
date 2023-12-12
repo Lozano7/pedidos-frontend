@@ -1,6 +1,10 @@
 import { mainApi } from '../../../api/mainApi';
 import { middlewareApi } from '../../../middleware';
-import { IUserResponse } from './interfaces/user-response.interface';
+import {
+  IUserCreateRequest,
+  IUserCreateResponse,
+  IUserResponse,
+} from './interfaces/user-response.interface';
 
 export const userApi = middlewareApi.injectEndpoints({
   endpoints: (builder) => ({
@@ -28,7 +32,21 @@ export const userApi = middlewareApi.injectEndpoints({
         }
       },
     }),
+    addUser: builder.mutation<IUserCreateResponse, IUserCreateRequest>({
+      queryFn: async (body) => {
+        try {
+          const { data } = await mainApi.post<IUserCreateResponse>(
+            'users',
+            body
+          );
+          return { data };
+        } catch (error: any) {
+          console.log(error);
+          return { error };
+        }
+      },
+    }),
   }),
 });
 
-export const { useGetUsersQuery } = userApi;
+export const { useGetUsersQuery, useAddUserMutation } = userApi;

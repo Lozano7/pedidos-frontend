@@ -21,7 +21,7 @@ export const routeAdmin = [
     id: uniqueId(),
     title: 'Administrar',
     icon: IconUserPlus,
-    href: '/dashboard/change-status',
+    href: '/dashboard/users',
   },
 
   /*{

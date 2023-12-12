@@ -35,7 +35,7 @@ const AuthRegister = ({ title, subtitle, subtext }: registerType) => {
       });
       if (response) {
         localStorage.setItem('x-token', response.access_token);
-        router.push('/dashboard/change-status');
+        router.push('/dashboard/users');
       }
     } catch (error: any) {
       setIsError(true);

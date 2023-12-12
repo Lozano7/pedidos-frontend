@@ -76,6 +76,7 @@ const AuthLogin = ({ title, subtitle, subtext }: loginType) => {
             Correo
           </Typography>
           <CustomTextField
+            type='email'
             variant='outlined'
             fullWidth
             value={email}

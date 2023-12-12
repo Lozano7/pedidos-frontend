@@ -15,3 +15,21 @@ export interface UserData {
   roles: string[];
   __v: number;
 }
+
+export interface IUserCreateResponse {
+  email: string;
+  roles: string[];
+  fullName: string;
+  name: string;
+  lastName: string;
+  identification: string;
+}
+
+export interface IUserCreateRequest {
+  email: string;
+  password: string;
+  name: string;
+  lastName: string;
+  identification: string;
+  roles: string[];
+}
