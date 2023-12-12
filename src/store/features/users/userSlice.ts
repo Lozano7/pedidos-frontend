@@ -1,5 +1,5 @@
 import { PayloadAction, createSlice } from '@reduxjs/toolkit';
-import { IUserResponse } from './interfaces/user-response.interface';
+import { IUserResponse, UserData } from './interfaces/user-response.interface';
 
 interface UsersState {
   usersTable: {
@@ -8,7 +8,7 @@ interface UsersState {
     search: string;
   };
   users: IUserResponse[];
-  userSelected: IUserResponse | null;
+  userSelected: UserData | null;
 }
 
 const user: UsersState = {

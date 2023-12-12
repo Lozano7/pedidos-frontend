@@ -33,3 +33,19 @@ export interface IUserCreateRequest {
   identification: string;
   roles: string[];
 }
+export interface IUserEditResponse {
+  email: string;
+  roles: string[];
+  fullName: string;
+  name: string;
+  lastName: string;
+  identification: string;
+}
+
+export interface IUserEditRequest {
+  email: string;
+  name: string;
+  lastName: string;
+  identification: string;
+  roles: string[];
+}

@@ -1,4 +1,13 @@
-import { Box, Card, CardContent, Stack, Typography } from '@mui/material';
+import {
+  Box,
+  Button,
+  Card,
+  CardContent,
+  Stack,
+  Typography,
+} from '@mui/material';
+import { IconArrowBack } from '@tabler/icons-react';
+import { useRouter } from 'next/navigation';
 
 type Props = {
   title?: string;
@@ -11,6 +20,7 @@ type Props = {
   children?: JSX.Element;
   middlecontent?: string | JSX.Element;
   style?: React.CSSProperties;
+  isBack?: boolean;
 };
 
 const DashboardCard = ({
@@ -24,7 +34,10 @@ const DashboardCard = ({
   headsubtitle,
   middlecontent,
   style,
+  isBack,
 }: Props) => {
+  const router = useRouter();
+
   return (
     <Card
       elevation={9}
@@ -52,7 +65,27 @@ const DashboardCard = ({
               mb={3}
             >
               <Box>
-                {title ? <Typography variant='h5'>{title}</Typography> : ''}
+                {title ? (
+                  <Box
+                    sx={{
+                      display: 'flex',
+                      alignItems: 'center',
+                    }}
+                  >
+                    {isBack && (
+                      <Button
+                        onClick={() => {
+                          router.back();
+                        }}
+                      >
+                        <IconArrowBack size={24} />
+                      </Button>
+                    )}
+                    <Typography variant='h5'>{title}</Typography>
+                  </Box>
+                ) : (
+                  ''
+                )}
 
                 {subtitle ? (
                   <Typography variant='subtitle2' color='textSecondary' mt={2}>

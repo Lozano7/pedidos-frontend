@@ -1,11 +1,11 @@
 import { mainApi } from '@/api/mainApi';
 import { middlewareApi } from '@/middleware';
-import { RolesResponse } from './interfaces/roles.interface';
+import { RolesData, RolesResponse } from './interfaces/roles.interface';
 
 export const rolesApi = middlewareApi.injectEndpoints({
   endpoints: (builder) => ({
     getRoles: builder.query<
-      RolesResponse,
+      RolesResponse | RolesData[],
       {
         page?: number;
         limit?: number;
@@ -15,14 +15,17 @@ export const rolesApi = middlewareApi.injectEndpoints({
     >({
       queryFn: async ({ limit, page, search, all }) => {
         try {
-          const { data } = await mainApi.get<RolesResponse>('roles', {
-            params: {
-              limit,
-              page,
-              search,
-              all,
-            },
-          });
+          const { data } = await mainApi.get<RolesResponse | RolesData[]>(
+            'roles',
+            {
+              params: {
+                limit,
+                page,
+                search,
+                all,
+              },
+            }
+          );
           return { data };
         } catch (error: any) {
           console.log(error);

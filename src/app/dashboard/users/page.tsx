@@ -1,10 +1,15 @@
 'use client';
 import SimplePage from '@/components/sample-page/page';
+import ConfirmDialog from '@/components/shared/ConfirmDialog';
 import DeleteButton from '@/components/shared/buttons/DeleteButton';
 import EditButton from '@/components/shared/buttons/EditButton';
 import SearchPaginatedTable from '@/components/shared/tables/SearchPaginatedTable';
-import { useGetUsersQuery } from '@/store/features/users/userApiSlice';
 import {
+  useDeleteUserMutation,
+  useGetUsersQuery,
+} from '@/store/features/users/userApiSlice';
+import {
+  setUserSelected,
   setUsersTableLimit,
   setUsersTablePage,
   setUsersTableSearch,
@@ -12,9 +17,15 @@ import {
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import { Box, Button, Chip, Stack } from '@mui/material';
 import { IconPlus } from '@tabler/icons-react';
+import { useRouter } from 'next/navigation';
+import { useState } from 'react';
 
 const Page = () => {
-  const { usersTable } = useAppSelector((state) => state.usersReducer);
+  const [openDialog, setOpenDialog] = useState(false);
+  const { usersTable, userSelected } = useAppSelector(
+    (state) => state.usersReducer
+  );
+  const router = useRouter();
   const dispatch = useAppDispatch();
   const {
     data: users,
@@ -30,6 +41,17 @@ const Page = () => {
     search: usersTable.search,
   });
 
+  const [
+    deleteUser,
+    {
+      isLoading: isDeleting,
+      isSuccess: isDeleteSuccess,
+      isError: isErrorDelete,
+      error: errorDelete,
+      reset: resetDelete,
+    },
+  ] = useDeleteUserMutation();
+
   return (
     <SimplePage
       title='Administrar usuarios'
@@ -44,7 +66,7 @@ const Page = () => {
               id: client.identification,
               email: client.email,
               roles: client.roles,
-              options: '',
+              options: client,
             })) || []
           }
           error={isError ? String((error as any).errorMessage) : ''}
@@ -84,7 +106,9 @@ const Page = () => {
             <Button
               variant='contained'
               startIcon={<IconPlus />}
-              onClick={() => {}}
+              onClick={() => {
+                router.push('/dashboard/users/create');
+              }}
             >
               Agregar
             </Button>
@@ -131,15 +155,51 @@ const Page = () => {
                 </Stack>
               );
             },
-            options: (user) => {
+            options: ({ options }) => {
               return (
                 <Stack direction='row' spacing={1} justifyContent='center'>
-                  <EditButton onClick={() => {}} />
-                  <DeleteButton onClick={() => {}} />
+                  <EditButton
+                    onClick={() => {
+                      dispatch(setUserSelected(options));
+                      router.push(`/dashboard/users/${options.identification}`);
+                    }}
+                  />
+                  <DeleteButton
+                    onClick={async () => {
+                      await dispatch(setUserSelected(options));
+                      setOpenDialog(true);
+                    }}
+                  />
                 </Stack>
               );
             },
           }}
+        />
+        <ConfirmDialog
+          open={openDialog}
+          onClose={async () => {
+            setOpenDialog(false);
+            await resetDelete();
+            await refetch();
+          }}
+          onAccept={async () => {
+            if (userSelected) {
+              try {
+                await deleteUser({
+                  id: userSelected.identification,
+                }).unwrap();
+              } catch (error) {
+                resetDelete();
+              }
+            }
+          }}
+          title='Eliminar usuario'
+          subtitle='¿Estás seguro de que quieres eliminar este usuario?'
+          successMessage='Usuario eliminado correctamente'
+          isSuccess={isDeleteSuccess}
+          errorMessage={String((errorDelete as any)?.response?.data?.message)}
+          loading={isDeleting}
+          iserror={isErrorDelete}
         />
       </Box>
     </SimplePage>

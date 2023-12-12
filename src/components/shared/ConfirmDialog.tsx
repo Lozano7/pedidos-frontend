@@ -21,6 +21,7 @@ interface ConfirmDialogProps {
   onAccept: () => void;
   title: string;
   subtitle: string;
+  successMessage: string;
   loading: boolean;
   isSuccess: boolean;
   iserror: boolean;
@@ -34,6 +35,7 @@ const ConfirmDialog = ({
   onAccept,
   title,
   subtitle,
+  successMessage,
   loading,
   isSuccess,
   iserror,
@@ -53,8 +55,7 @@ const ConfirmDialog = ({
                   textAlign: 'center',
                 }}
               >
-                Actualizando lista de estudiantes matriculado, por favor
-                espere...
+                Se está procesando la información, por favor espere...
               </Typography>
             </DialogTitle>
             <DialogContent
@@ -96,10 +97,7 @@ const ConfirmDialog = ({
               </Typography>
             </DialogTitle>
             <DialogContent>
-              <Typography variant='body1'>
-                La lista de estudiantes matriculados se ha actualizado
-                correctamente.
-              </Typography>
+              <Typography variant='body1'>{successMessage}</Typography>
             </DialogContent>
             <DialogActions>
               <Button onClick={onClose} disabled={loading}>
@@ -148,7 +146,7 @@ const ConfirmDialog = ({
                   textAlign: 'center',
                 }}
               >
-                ¡Ups! Ha ocurrido un error al subir el archivo.
+                ¡Ups! Ha ocurrido un error.
               </Typography>
 
               <Typography
@@ -157,7 +155,7 @@ const ConfirmDialog = ({
                   mt: 2,
                 }}
               >
-                No se ha podido actualizar la lista de estudiantes matriculados.
+                No se ha podido realizar la operación solicitada.
               </Typography>
               <Typography variant='body1'>Error: </Typography>
 

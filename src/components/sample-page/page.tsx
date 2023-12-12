@@ -12,6 +12,7 @@ interface SamplePageProps {
   headtitle?: string | JSX.Element;
   headsubtitle?: string | JSX.Element;
   middlecontent?: string | JSX.Element;
+  isBack?: boolean;
 }
 
 const SimplePage = ({
@@ -24,6 +25,7 @@ const SimplePage = ({
   middlecontent,
   subtitle,
   title,
+  isBack,
 }: SamplePageProps) => {
   return (
     <PageContainer>
@@ -36,6 +38,7 @@ const SimplePage = ({
         headtitle={headtitle}
         headsubtitle={headsubtitle}
         middlecontent={middlecontent}
+        isBack={isBack}
       >
         {children}
       </DashboardCard>

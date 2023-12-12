@@ -1,11 +1,11 @@
 export interface RolesResponse {
-  data: Datum[];
+  data: RolesData[];
   total: number;
   page: number;
   limit: number;
 }
 
-export interface Datum {
+export interface RolesData {
   _id: string;
   name: string;
   keyword: string;

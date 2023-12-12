@@ -3,6 +3,8 @@ import { middlewareApi } from '../../../middleware';
 import {
   IUserCreateRequest,
   IUserCreateResponse,
+  IUserEditRequest,
+  IUserEditResponse,
   IUserResponse,
 } from './interfaces/user-response.interface';
 
@@ -46,7 +48,40 @@ export const userApi = middlewareApi.injectEndpoints({
         }
       },
     }),
+    editUser: builder.mutation<IUserEditResponse, IUserEditRequest>({
+      queryFn: async (body) => {
+        try {
+          const { data } = await mainApi.patch<IUserEditResponse>(
+            `users/${body.identification}`,
+            body
+          );
+          return { data };
+        } catch (error: any) {
+          console.log(error);
+          return { error };
+        }
+      },
+    }),
+    deleteUser: builder.mutation<{ message: string }, { id: string | number }>({
+      queryFn: async ({ id }) => {
+        try {
+          console.log('Id a eliminar', id);
+          const { data } = await mainApi.delete<{ message: string }>(
+            `users/${id}`
+          );
+          return { data };
+        } catch (error: any) {
+          console.log(error);
+          return { error };
+        }
+      },
+    }),
   }),
 });
 
-export const { useGetUsersQuery, useAddUserMutation } = userApi;
+export const {
+  useGetUsersQuery,
+  useAddUserMutation,
+  useEditUserMutation,
+  useDeleteUserMutation,
+} = userApi;
