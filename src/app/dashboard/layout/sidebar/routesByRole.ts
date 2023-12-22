@@ -23,6 +23,16 @@ export const routeAdmin = [
     icon: IconUserPlus,
     href: '/dashboard/users',
   },
+  {
+    navlabel: true,
+    subheader: 'Restaurantes',
+  },
+  {
+    id: uniqueId(),
+    title: 'Administrar',
+    icon: IconUserPlus,
+    href: '/dashboard/restaurants',
+  },
 
   /*{
     id: uniqueId(),

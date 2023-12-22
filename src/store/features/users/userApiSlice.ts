@@ -6,6 +6,7 @@ import {
   IUserEditRequest,
   IUserEditResponse,
   IUserResponse,
+  UserData,
 } from './interfaces/user-response.interface';
 
 export const userApi = middlewareApi.injectEndpoints({
@@ -34,6 +35,24 @@ export const userApi = middlewareApi.injectEndpoints({
         }
       },
     }),
+
+    getUserByIdentification: builder.query<
+      UserData,
+      { identification: string }
+    >({
+      queryFn: async ({ identification }) => {
+        try {
+          const { data } = await mainApi.get<UserData>(
+            `users/${identification}`
+          );
+          return { data };
+        } catch (error: any) {
+          console.log(error);
+          return { error };
+        }
+      },
+    }),
+
     addUser: builder.mutation<IUserCreateResponse, IUserCreateRequest>({
       queryFn: async (body) => {
         try {
@@ -84,4 +103,5 @@ export const {
   useAddUserMutation,
   useEditUserMutation,
   useDeleteUserMutation,
+  useLazyGetUserByIdentificationQuery,
 } = userApi;

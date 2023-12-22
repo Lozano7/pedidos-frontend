@@ -4,42 +4,39 @@ import ConfirmDialog from '@/components/shared/ConfirmDialog';
 import DeleteButton from '@/components/shared/buttons/DeleteButton';
 import EditButton from '@/components/shared/buttons/EditButton';
 import SearchPaginatedTable from '@/components/shared/tables/SearchPaginatedTable';
+import { IRestaurantsResponse } from '@/store/features/restaurants/interfaces/restaurant-response.interface';
 import {
-  useDeleteUserMutation,
-  useGetUsersQuery,
-} from '@/store/features/users/userApiSlice';
+  useDeleteRestaurantMutation,
+  useGetRestaurantsQuery,
+} from '@/store/features/restaurants/restaurantApiSlice';
 import {
-  setUserSelected,
-  setUsersTableLimit,
-  setUsersTablePage,
-  setUsersTableSearch,
-} from '@/store/features/users/userSlice';
+  setRestaurantSelected,
+  setRestaurantsTableLimit,
+  setRestaurantsTablePage,
+  setRestaurantsTableSearch,
+} from '@/store/features/restaurants/restaurantSlice';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import { Box, Button, Chip, Stack } from '@mui/material';
 import { IconPlus } from '@tabler/icons-react';
 import { useRouter } from 'next/navigation';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 const Page = () => {
   const [openDialog, setOpenDialog] = useState(false);
-  const { usersTable, userSelected } = useAppSelector(
-    (state) => state.usersReducer
+  const [restaurantsData, setRestaurantsData] =
+    useState<IRestaurantsResponse | null>(null);
+  const { restaurantsTable, restaurantSelected } = useAppSelector(
+    (state) => state.restaurantsReducer
   );
+
   const router = useRouter();
   const dispatch = useAppDispatch();
-  const {
-    data: users,
-    isLoading,
-    isFetching,
-    isSuccess,
-    isError,
-    error,
-    refetch,
-  } = useGetUsersQuery({
-    page: usersTable.page,
-    limit: usersTable.limit,
-    search: usersTable.search,
-  });
+  const { data, isLoading, isFetching, isSuccess, isError, error, refetch } =
+    useGetRestaurantsQuery({
+      page: restaurantsTable.page,
+      limit: restaurantsTable.limit,
+      search: restaurantsTable.search,
+    });
 
   const [
     deleteUser,
@@ -50,83 +47,117 @@ const Page = () => {
       error: errorDelete,
       reset: resetDelete,
     },
-  ] = useDeleteUserMutation();
+  ] = useDeleteRestaurantMutation();
+
+  useEffect(() => {
+    if (data && !Array.isArray(data)) {
+      setRestaurantsData(data);
+    }
+  }, [data]);
 
   return (
     <SimplePage
-      title='Administrar usuarios'
-      subtitle='En esta sección puedes administrar los usuarios de la plataforma'
+      title='Administrar restaurantes'
+      subtitle='En esta sección puedes administrar los restaurantes de la plataforma'
     >
       <Box sx={{ mt: 3 }}>
         <SearchPaginatedTable
           data={
-            users?.data?.map((client, index) => ({
-              number: usersTable.limit * (usersTable.page - 1) + index + 1,
-              name: `${client.name} ${client.lastName}`,
-              id: client.identification,
-              email: client.email,
-              roles: client.roles,
-              options: client,
+            restaurantsData?.data?.map((restaurant, index) => ({
+              number:
+                restaurantsTable.limit * (restaurantsTable.page - 1) +
+                index +
+                1,
+              name: `${restaurant.name}`,
+              ruc: restaurant.ruc,
+              address: restaurant.address,
+              phone: restaurant.phone,
+              adminName: restaurant.adminName,
+              startOrderTime: restaurant.startOrderTime,
+              endOrderTime: restaurant.endOrderTime,
+              deliveryTime: restaurant.deliveryTime,
+              status: restaurant.status,
+              options: restaurant,
             })) || []
           }
           error={isError ? String((error as any).errorMessage) : ''}
           headers={{
             number: 'N°',
             name: 'Nombre',
-            id: 'Identificación',
-            email: 'Correo',
-            roles: 'Roles',
+            ruc: 'RUC',
+            address: 'Dirección',
+            phone: 'Teléfono',
+            adminName: 'Nombre del administrador',
+            startOrderTime: 'Hora de inicio de pedidos',
+            endOrderTime: 'Hora de fin de pedidos',
+            deliveryTime: 'Tiempo de entrega',
+            status: 'Estado',
             options: 'Opciones',
           }}
           isFetching={isFetching}
           isLoading={isLoading}
-          keyExtractor={(row) => String(row.id)}
-          page={usersTable.page}
-          perPage={usersTable.limit}
-          search={usersTable.search}
+          keyExtractor={(row) => String(row.ruc)}
+          page={restaurantsTable.page}
+          perPage={restaurantsTable.limit}
+          search={restaurantsTable.search}
           searchPlacehoder='Buscar por su número de identificación'
           setPage={(page: number) => {
-            dispatch(setUsersTablePage(page));
+            dispatch(setRestaurantsTablePage(page));
           }}
           setPerPage={
             (limit: number) => {
-              dispatch(setUsersTableLimit(limit));
+              dispatch(setRestaurantsTableLimit(limit));
             }
             // setSize
           }
           setSearch={
             (search: string) => {
-              dispatch(setUsersTableSearch(search));
+              dispatch(setRestaurantsTableSearch(search));
             }
             // setSearch
           }
-          total={Number(users?.total || 0)}
+          total={Number(restaurantsData?.total || 0)}
           numHeader={6}
           ActionButtons={
             <Button
               variant='contained'
               startIcon={<IconPlus />}
               onClick={() => {
-                router.push('/dashboard/users/create');
+                router.push('/dashboard/restaurants/create');
               }}
             >
               Agregar
             </Button>
           }
           customDataCellsProperties={{
-            id: {
+            number: {
               align: 'center',
             },
             name: {
               align: 'center',
             },
-            number: {
+            ruc: {
               align: 'center',
             },
-            email: {
+            address: {
               align: 'center',
             },
-            roles: {
+            phone: {
+              align: 'center',
+            },
+            adminName: {
+              align: 'center',
+            },
+            startOrderTime: {
+              align: 'center',
+            },
+            endOrderTime: {
+              align: 'center',
+            },
+            deliveryTime: {
+              align: 'center',
+            },
+            status: {
               align: 'center',
             },
             options: {
@@ -134,7 +165,7 @@ const Page = () => {
             },
           }}
           customRenderers={{
-            roles: ({ roles }) => {
+            status: ({ status }) => {
               return (
                 <Stack
                   direction='row'
@@ -144,14 +175,7 @@ const Page = () => {
                     alignItems: 'center',
                   }}
                 >
-                  {roles.map((role: string, index: number) => (
-                    <Chip
-                      key={`${role}-${index}`}
-                      label={role}
-                      color='primary'
-                      variant='outlined'
-                    />
-                  ))}
+                  <Chip label={status} color='primary' variant='outlined' />
                 </Stack>
               );
             },
@@ -160,14 +184,14 @@ const Page = () => {
                 <Stack direction='row' spacing={1} justifyContent='center'>
                   <EditButton
                     onClick={() => {
-                      dispatch(setUserSelected(options));
-                      router.push(`/dashboard/users/${options.identification}`);
+                      dispatch(setRestaurantSelected(options));
+                      router.push(`/dashboard/restaurants/${options.ruc}`);
                     }}
                   />
                   <DeleteButton
                     onClick={async () => {
                       console.log;
-                      await dispatch(setUserSelected(options));
+                      await dispatch(setRestaurantSelected(options));
                       setOpenDialog(true);
                     }}
                   />
@@ -184,19 +208,19 @@ const Page = () => {
             await refetch();
           }}
           onAccept={async () => {
-            if (userSelected) {
+            if (restaurantSelected) {
               try {
                 await deleteUser({
-                  id: userSelected.identification,
+                  ruc: '',
                 }).unwrap();
               } catch (error) {
                 resetDelete();
               }
             }
           }}
-          title='Eliminar usuario'
-          subtitle='¿Estás seguro de que quieres eliminar este usuario?'
-          successMessage='Usuario eliminado correctamente'
+          title='Eliminar restaurante'
+          subtitle='¿Estás seguro de que quieres eliminar este restaurante?'
+          successMessage='Restaurante eliminado correctamente'
           isSuccess={isDeleteSuccess}
           errorMessage={String((errorDelete as any)?.response?.data?.message)}
           loading={isDeleting}

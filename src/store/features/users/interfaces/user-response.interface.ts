@@ -12,6 +12,7 @@ export interface UserData {
   password: string;
   name: string;
   lastName: string;
+  restaurantId: string;
   roles: string[];
   __v: number;
 }
@@ -23,6 +24,7 @@ export interface IUserCreateResponse {
   name: string;
   lastName: string;
   identification: string;
+  restaurantId: string;
 }
 
 export interface IUserCreateRequest {
@@ -31,6 +33,7 @@ export interface IUserCreateRequest {
   name: string;
   lastName: string;
   identification: string;
+  restaurantId: string;
   roles: string[];
 }
 export interface IUserEditResponse {
@@ -40,6 +43,7 @@ export interface IUserEditResponse {
   name: string;
   lastName: string;
   identification: string;
+  restaurantId: string;
 }
 
 export interface IUserEditRequest {
@@ -47,5 +51,6 @@ export interface IUserEditRequest {
   name: string;
   lastName: string;
   identification: string;
+  restaurantId: string;
   roles: string[];
 }
