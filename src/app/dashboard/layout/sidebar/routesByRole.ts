@@ -94,8 +94,8 @@ export const routeRestaurant = [
   },
   {
     id: uniqueId(),
-    title: 'Administrar',
+    title: 'Administrar menú',
     icon: IconUserPlus,
-    href: '/dashboard/update-student-list',
+    href: '/dashboard/restaurants/administrar-menu',
   },
 ];

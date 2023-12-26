@@ -40,7 +40,7 @@ const AuthLogin = ({ title, subtitle, subtext }: loginType) => {
         localStorage.setItem('x-token', response.access_token);
         localStorage.setItem('userRoles', JSON.stringify(response.roles));
         dispatch(loginSuccess(response));
-        router.push('/dashboard/users');
+        router.push('/dashboard/');
       }
     } catch (error: any) {
       setIsError(true);
