@@ -37,6 +37,9 @@ const AuthLogin = ({ title, subtitle, subtext }: loginType) => {
         }
       );
       if (response) {
+        if (response.restaurantId) {
+          localStorage.setItem('restaurantId', response.restaurantId);
+        }
         localStorage.setItem('x-token', response.access_token);
         localStorage.setItem('userRoles', JSON.stringify(response.roles));
         dispatch(loginSuccess(response));

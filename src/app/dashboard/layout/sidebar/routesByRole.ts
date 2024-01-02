@@ -1,4 +1,4 @@
-import { IconFolder, IconUserPlus } from '@tabler/icons-react';
+import { IconFilePlus, IconFolder, IconUserPlus } from '@tabler/icons-react';
 import { uniqueId } from 'lodash';
 
 export const routeAdmin = [
@@ -81,9 +81,9 @@ export const routeUser = [
   },
   {
     id: uniqueId(),
-    title: 'Menú del dia',
-    icon: IconUserPlus,
-    href: '/dashboard/update-student-list',
+    title: 'Realizar pedido',
+    icon: IconFilePlus,
+    href: '/dashboard/pedidos',
   },
 ];
 
@@ -95,7 +95,7 @@ export const routeRestaurant = [
   {
     id: uniqueId(),
     title: 'Administrar menú',
-    icon: IconUserPlus,
+    icon: IconFilePlus,
     href: '/dashboard/restaurants/administrar-menu',
   },
 ];
