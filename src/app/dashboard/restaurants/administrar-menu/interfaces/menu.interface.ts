@@ -19,5 +19,10 @@ export interface MenuResponseData {
   date: string;
   menus: IMenu[];
   restaurantId: string;
+  restaurantName: string;
+  restaurantAddress: string;
+  restaurantStartOrderTime: string;
+  restaurantEndOrderTime: string;
+  restaurantDeliveryTime: string;
   __v: number;
 }

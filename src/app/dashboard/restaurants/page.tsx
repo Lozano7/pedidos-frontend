@@ -76,7 +76,7 @@ const Page = () => {
               startOrderTime: restaurant.startOrderTime,
               endOrderTime: restaurant.endOrderTime,
               deliveryTime: restaurant.deliveryTime,
-              status: restaurant.status,
+              status: restaurant.status === 'A' ? 'Activo' : 'Inactivo',
               options: restaurant,
             })) || []
           }
@@ -117,7 +117,7 @@ const Page = () => {
             // setSearch
           }
           total={Number(restaurantsData?.total || 0)}
-          numHeader={6}
+          numHeader={11}
           ActionButtons={
             <Button
               variant='contained'
@@ -175,7 +175,11 @@ const Page = () => {
                     alignItems: 'center',
                   }}
                 >
-                  <Chip label={status} color='primary' variant='outlined' />
+                  <Chip
+                    label={status}
+                    color={status === 'Activo' ? 'success' : 'error'}
+                    variant='outlined'
+                  />
                 </Stack>
               );
             },

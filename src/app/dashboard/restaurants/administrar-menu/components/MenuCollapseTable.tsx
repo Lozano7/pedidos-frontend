@@ -1,4 +1,3 @@
-import { Menu } from '@/store/features/menu/interfaces/menu.interface';
 import {
   Paper,
   Table,
@@ -8,12 +7,14 @@ import {
   TableHead,
   TableRow,
 } from '@mui/material';
+import { MenuResponseData } from '../interfaces/menu.interface';
 
 interface IProps {
-  menus: Menu[];
+  data: MenuResponseData;
 }
 
-const MenuCollapseTable = ({ menus }: IProps) => {
+const MenuCollapseTable = ({ data }: IProps) => {
+  const { menus } = data;
   return (
     <TableContainer component={Paper} sx={{ border: 1 }}>
       <Table sx={{ minWidth: 650 }} aria-label='simple table'>

@@ -12,9 +12,10 @@ export const menuApi = middlewareApi.injectEndpoints({
         limit?: number;
         search?: string;
         all?: boolean;
+        date?: string;
       }
     >({
-      queryFn: async ({ limit, page, search, all }) => {
+      queryFn: async ({ limit, page, search, all, date }) => {
         try {
           const { data } = await mainApi.get<IMenuResponseList | MenuData[]>(
             'menu',
@@ -24,6 +25,7 @@ export const menuApi = middlewareApi.injectEndpoints({
                 page,
                 search,
                 all,
+                date,
               },
             }
           );

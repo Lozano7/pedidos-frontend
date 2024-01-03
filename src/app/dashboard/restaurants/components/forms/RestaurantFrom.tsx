@@ -164,17 +164,16 @@ const RestaurantFrom = () => {
       <form onSubmit={handleSubmit}>
         <Grid container direction='column' xs={12} spacing={2} p={2}>
           <Grid item xs={12} md={6} lg={6}>
-            {isSuccess ||
-              (isEditSuccess && (
-                <SuccessAlert
-                  message={
-                    id
-                      ? 'Usuario editado correctamente'
-                      : 'Usuario creado correctamente'
-                  }
-                  handleDismiss={() => reset()}
-                />
-              ))}
+            {(isSuccess || isEditSuccess) && (
+              <SuccessAlert
+                message={
+                  id
+                    ? 'Restaurante editado correctamente'
+                    : 'Restaurante creado correctamente'
+                }
+                handleDismiss={() => reset()}
+              />
+            )}
             {(isError || isEditError) && (
               <ErrorAlert
                 message={
@@ -336,15 +335,24 @@ const RestaurantFrom = () => {
 
             <Grid item xs={12} md={6} lg={6}>
               <InputLabel>Tiempo de entrega</InputLabel>
-              <LocalizationWrapper>
-                <TimePicker
-                  disabled={isLoadingRestaurantData}
-                  value={values.deliveryTime}
-                  onChange={(newValue) => {
-                    setFieldValue('deliveryTime', newValue);
-                  }}
-                />
-              </LocalizationWrapper>
+              <TextField
+                disabled={isLoadingRestaurantData}
+                type='number'
+                placeholder='Ingrese el tiempo de entrega'
+                id='deliveryTime'
+                name='deliveryTime'
+                onChange={handleChange}
+                value={values.deliveryTime}
+                fullWidth
+                error={
+                  Boolean(errors.deliveryTime) && Boolean(touched.deliveryTime)
+                }
+                helperText={
+                  Boolean(errors.deliveryTime) && Boolean(touched.deliveryTime)
+                    ? `${errors.deliveryTime}`
+                    : ''
+                }
+              />
             </Grid>
           </Grid>
 
