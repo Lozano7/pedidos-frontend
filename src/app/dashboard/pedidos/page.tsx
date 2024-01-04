@@ -1,6 +1,5 @@
 'use client';
 import SimplePage from '@/components/sample-page/page';
-import ConfirmDialog from '@/components/shared/ConfirmDialog';
 import SearchPaginatedTable from '@/components/shared/tables/SearchPaginatedTable';
 import {
   useDeleteMenuMutation,
@@ -39,7 +38,7 @@ const Page = () => {
     page: menuTable.page,
     limit: menuTable.limit,
     search: menuTable.search,
-    date: dayjs().format('MM-DD-YYYY'),
+    date: dayjs().format('MM/DD/YYYY'),
   });
 
   const [
@@ -146,33 +145,6 @@ const Page = () => {
               );
             },
           }}
-        />
-
-        <ConfirmDialog
-          open={openDialog}
-          onClose={async () => {
-            setOpenDialog(false);
-            await resetDelete();
-            await refetch();
-          }}
-          onAccept={async () => {
-            if (menuSelected) {
-              try {
-                await deleteMenu({
-                  fecha: menuSelected.date.split('/').join('-'),
-                }).unwrap();
-              } catch (error) {
-                resetDelete();
-              }
-            }
-          }}
-          title='Eliminar menú'
-          subtitle='¿Estás seguro de que quieres eliminar este menú?'
-          successMessage='Menú eliminado correctamente'
-          isSuccess={isDeleteSuccess}
-          errorMessage={String((errorDelete as any)?.response?.data?.message)}
-          loading={isDeleting}
-          iserror={isErrorDelete}
         />
       </>
     </SimplePage>

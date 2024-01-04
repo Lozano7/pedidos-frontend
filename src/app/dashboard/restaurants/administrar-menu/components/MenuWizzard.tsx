@@ -50,13 +50,16 @@ export const MenuWizzard = () => {
   const [activeStep, setActiveStep] = useState(0);
   const { fecha } = useParams();
 
-  const { data: restaurantData, isFetching: isFetchingRestaurantData } =
-    useGetRestaurantByRucQuery({
-      ruc:
-        typeof window !== 'undefined'
-          ? localStorage.getItem('restaurantId') || ''
-          : '',
-    });
+  const {
+    data: restaurantData,
+    isFetching: isFetchingRestaurantData,
+    isError: isErrorRestaurantData,
+  } = useGetRestaurantByRucQuery({
+    ruc:
+      typeof window !== 'undefined'
+        ? localStorage.getItem('restaurantId') || ''
+        : '',
+  });
 
   const [addMenu, { isLoading, isError, error, isSuccess, reset }] =
     useAddMenuMutation();
@@ -76,50 +79,54 @@ export const MenuWizzard = () => {
   const [getMenuByDate, { data: menuData, isLoading: isLoadingMenuData }] =
     useLazyGetMenuByDateQuery();
 
-  const { values, handleSubmit, resetForm, setFieldValue, errors } = useFormik({
-    validationSchema: menuSchema,
-    initialValues: {
-      date: dayjs(new Date()),
-      menus: [] as IMenu[],
-      restaurantId:
-        typeof window !== 'undefined'
-          ? localStorage.getItem('restaurantId') || ''
-          : '',
-      restaurantName: '',
-      restaurantAddress: '',
-      restaurantStartOrderTime: '',
-      restaurantEndOrderTime: '',
-      restaurantDeliveryTime: '',
-    },
-    onSubmit: () => {
-      if (fecha) {
-        editMenu({
-          fecha: fecha,
-          body: {
+  const { values, handleSubmit, resetForm, setFieldValue, errors, isValid } =
+    useFormik({
+      validationSchema: menuSchema,
+      initialValues: {
+        date: dayjs(new Date()),
+        menus: [] as IMenu[],
+        restaurantId:
+          typeof window !== 'undefined'
+            ? localStorage.getItem('restaurantId') || ''
+            : '',
+        restaurantName: '',
+        restaurantAddress: '',
+        restaurantStartOrderTime: '',
+        restaurantEndOrderTime: '',
+        restaurantDeliveryTime: '',
+      },
+      onSubmit: () => {
+        if (fecha) {
+          editMenu({
+            fecha: fecha,
+            body: {
+              menus: values.menus,
+              restaurantId: values.restaurantId,
+              date: fecha.split('-').join('/'),
+              restaurantName: values.restaurantName,
+              restaurantAddress: values.restaurantAddress,
+              restaurantStartOrderTime: values.restaurantStartOrderTime,
+              restaurantEndOrderTime: values.restaurantEndOrderTime,
+              restaurantDeliveryTime: values.restaurantDeliveryTime,
+            },
+          });
+        } else {
+          addMenu({
+            date: values.date.format('MM/DD/YYYY'),
             menus: values.menus,
             restaurantId: values.restaurantId,
-            date: fecha.split('-').join('/'),
             restaurantName: values.restaurantName,
             restaurantAddress: values.restaurantAddress,
             restaurantStartOrderTime: values.restaurantStartOrderTime,
             restaurantEndOrderTime: values.restaurantEndOrderTime,
             restaurantDeliveryTime: values.restaurantDeliveryTime,
-          },
-        });
-      } else {
-        addMenu({
-          date: values.date.format('MM/DD/YYYY'),
-          menus: values.menus,
-          restaurantId: values.restaurantId,
-          restaurantName: values.restaurantName,
-          restaurantAddress: values.restaurantAddress,
-          restaurantStartOrderTime: values.restaurantStartOrderTime,
-          restaurantEndOrderTime: values.restaurantEndOrderTime,
-          restaurantDeliveryTime: values.restaurantDeliveryTime,
-        });
-      }
-    },
-  });
+          });
+        }
+      },
+    });
+
+  console.log('erros', errors);
+  console.log('isValid', isValid);
 
   useEffect(() => {
     if (restaurantData) {
@@ -136,6 +143,10 @@ export const MenuWizzard = () => {
     if (fecha) {
       getMenuByDate({
         date: fecha,
+        restaurantId:
+          typeof window !== 'undefined'
+            ? localStorage.getItem('restaurantId') || ''
+            : '',
       });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -198,6 +209,19 @@ export const MenuWizzard = () => {
                 }}
               />
             )}
+
+            {isErrorRestaurantData && (
+              <ErrorAlert
+                message='No se pudo obtener los datos del restaurante, por favor intente nuevamente más tarde'
+                handleDismiss={() => {
+                  if (fecha) {
+                    resetEdit();
+                  } else {
+                    reset();
+                  }
+                }}
+              />
+            )}
           </Grid>
 
           <Grid container item xs={6} spacing={2}>
@@ -242,62 +266,6 @@ export const MenuWizzard = () => {
                   );
                 })}
               </Stepper>
-              <Box sx={{ pt: 2 }}>
-                {errors.restaurantName && (
-                  <ErrorAlert
-                    message='El nombre del restaurante es requerido'
-                    handleDismiss={() => {
-                      if (fecha) {
-                        resetEdit();
-                      } else {
-                        reset();
-                      }
-                    }}
-                  />
-                )}
-              </Box>
-              <Box sx={{ pt: 2 }}>
-                {errors.restaurantStartOrderTime && (
-                  <ErrorAlert
-                    message='El horario de inicio de pedidos es requerido'
-                    handleDismiss={() => {
-                      if (fecha) {
-                        resetEdit();
-                      } else {
-                        reset();
-                      }
-                    }}
-                  />
-                )}
-              </Box>
-              <Box sx={{ pt: 2 }}>
-                {errors.restaurantEndOrderTime && (
-                  <ErrorAlert
-                    message='El horario de fin de pedidos es requerido'
-                    handleDismiss={() => {
-                      if (fecha) {
-                        resetEdit();
-                      } else {
-                        reset();
-                      }
-                    }}
-                  />
-                )}
-              </Box>
-              <Box sx={{ pt: 2 }}>
-                {errors.restaurantDeliveryTime && (
-                  <ErrorAlert
-                    message='El tiempo de entrega es requerido'
-                    handleDismiss={() => {
-                      if (fecha) {
-                        resetEdit();
-                      } else {
-                        reset();
-                      }
-                    }}
-                  />
-                )}
-              </Box>
             </Box>
             <Grid item xs={12} md={6}>
               <Button

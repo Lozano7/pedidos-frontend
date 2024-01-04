@@ -43,6 +43,10 @@ const Page = () => {
     page: menuTable.page,
     limit: menuTable.limit,
     search: menuTable.search,
+    restaurantId:
+      typeof window !== 'undefined'
+        ? localStorage.getItem('restaurantId') || ''
+        : '',
   });
 
   const [
@@ -117,7 +121,7 @@ const Page = () => {
           numHeader={6}
           isCollapsible
           CollapsibleItems={data?.data?.map((menus) => (
-            <MenuCollapseTable key={menus?.date} data={menus?.menus} />
+            <MenuCollapseTable key={menus?.date} data={menus} />
           ))}
           ActionButtons={
             <Button
@@ -167,9 +171,9 @@ const Page = () => {
               return (
                 <Stack direction='row' spacing={1} justifyContent='center'>
                   <EditButton
-                    disabled={dayjs(options.date).isBefore(
-                      dayjs().startOf('day')
-                    )}
+                    // disabled={dayjs(options.date).isBefore(
+                    //   dayjs().startOf('day')
+                    // )}
                     onClick={() => {
                       dispatch(setMenuSelected(options));
                       router.push(
@@ -180,9 +184,9 @@ const Page = () => {
                     }}
                   />
                   <DeleteButton
-                    disabled={dayjs(options.date).isBefore(
-                      dayjs().startOf('day')
-                    )}
+                    // disabled={dayjs(options.date).isBefore(
+                    //   dayjs().startOf('day')
+                    // )}
                     onClick={async () => {
                       await dispatch(setMenuSelected(options));
                       setOpenDialog(true);
@@ -206,6 +210,10 @@ const Page = () => {
               try {
                 await deleteMenu({
                   fecha: menuSelected.date.split('/').join('-'),
+                  restaurantId:
+                    typeof window !== 'undefined'
+                      ? localStorage.getItem('restaurantId') || ''
+                      : '',
                 }).unwrap();
               } catch (error) {
                 resetDelete();

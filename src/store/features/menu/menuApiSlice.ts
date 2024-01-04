@@ -13,9 +13,10 @@ export const menuApi = middlewareApi.injectEndpoints({
         search?: string;
         all?: boolean;
         date?: string;
+        restaurantId?: string;
       }
     >({
-      queryFn: async ({ limit, page, search, all, date }) => {
+      queryFn: async ({ limit, page, search, all, date, restaurantId }) => {
         try {
           const { data } = await mainApi.get<IMenuResponseList | MenuData[]>(
             'menu',
@@ -26,6 +27,7 @@ export const menuApi = middlewareApi.injectEndpoints({
                 search,
                 all,
                 date,
+                restaurantId,
               },
             }
           );
@@ -37,10 +39,15 @@ export const menuApi = middlewareApi.injectEndpoints({
       },
     }),
 
-    getMenuByDate: builder.query<MenuData, { date: string }>({
-      queryFn: async ({ date }) => {
+    getMenuByDate: builder.query<
+      MenuData,
+      { date: string; restaurantId: string }
+    >({
+      queryFn: async ({ date, restaurantId }) => {
         try {
-          const { data } = await mainApi.get<MenuData>(`menu/${date}`);
+          const { data } = await mainApi.get<MenuData>(
+            `menu/${date}/${restaurantId}`
+          );
           return { data };
         } catch (error: any) {
           console.log(error);
@@ -79,10 +86,15 @@ export const menuApi = middlewareApi.injectEndpoints({
       },
     }),
 
-    deleteMenu: builder.mutation<IMenu, { fecha: string }>({
-      queryFn: async ({ fecha }) => {
+    deleteMenu: builder.mutation<
+      IMenu,
+      { fecha: string; restaurantId: string }
+    >({
+      queryFn: async ({ fecha, restaurantId }) => {
         try {
-          const { data } = await mainApi.delete<IMenu>(`menu/${fecha}`);
+          const { data } = await mainApi.delete<IMenu>(
+            `menu/${fecha}/${restaurantId}`
+          );
           return { data };
         } catch (error: any) {
           console.log(error);
