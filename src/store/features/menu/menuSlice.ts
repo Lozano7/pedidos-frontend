@@ -1,4 +1,5 @@
 import {
+  IMenu,
   IMenuResponseList,
   MenuResponseData,
 } from '@/app/dashboard/restaurants/administrar-menu/interfaces/menu.interface';
@@ -12,6 +13,7 @@ interface AdminMenuState {
   };
   menus: IMenuResponseList[];
   menuSelected: MenuResponseData | null;
+  menuForType: IMenu | null;
 }
 
 const menu: AdminMenuState = {
@@ -22,6 +24,7 @@ const menu: AdminMenuState = {
     search: '',
   },
   menuSelected: null,
+  menuForType: null,
 };
 
 const adminMenuSlice = createSlice({
@@ -56,6 +59,9 @@ const adminMenuSlice = createSlice({
     setMenuTableSearch: (state, action: PayloadAction<string>) => {
       state.menuTable.search = action.payload;
     },
+    setMenuForType: (state, action: PayloadAction<IMenu>) => {
+      state.menuForType = action.payload;
+    },
   },
 });
 
@@ -66,6 +72,7 @@ export const {
   setMenuTablePage,
   setMenuTableLimit,
   setMenuTableSearch,
+  setMenuForType,
 } = adminMenuSlice.actions;
 
 export default adminMenuSlice.reducer;

@@ -42,6 +42,11 @@ const AuthLogin = ({ title, subtitle, subtext }: loginType) => {
         }
         localStorage.setItem('x-token', response.access_token);
         localStorage.setItem('userRoles', JSON.stringify(response.roles));
+        localStorage.setItem(
+          'pedidos-user-identification',
+          response.identification
+        );
+        localStorage.setItem('pedidos-user-name', response.fullName);
         dispatch(loginSuccess(response));
         router.push('/dashboard/');
       }

@@ -1,4 +1,7 @@
+import { setMenuForType } from '@/store/features/menu/menuSlice';
+import { useAppDispatch } from '@/store/hooks';
 import {
+  Button,
   Paper,
   Table,
   TableBody,
@@ -7,14 +10,17 @@ import {
   TableHead,
   TableRow,
 } from '@mui/material';
+import { IconPlus } from '@tabler/icons-react';
 import { MenuResponseData } from '../interfaces/menu.interface';
 
 interface IProps {
   data: MenuResponseData;
+  handleIsViewDialog?: () => void;
 }
 
-const MenuCollapseTable = ({ data }: IProps) => {
+const MenuCollapseTable = ({ data, handleIsViewDialog }: IProps) => {
   const { menus } = data;
+  const dispatch = useAppDispatch();
   return (
     <TableContainer component={Paper} sx={{ border: 1 }}>
       <Table sx={{ minWidth: 650 }} aria-label='simple table'>
@@ -27,6 +33,9 @@ const MenuCollapseTable = ({ data }: IProps) => {
             <TableCell align='center'>Postre</TableCell>
             <TableCell align='center'>Jugo</TableCell>
             <TableCell align='center'>Precio</TableCell>
+            {handleIsViewDialog && (
+              <TableCell align='center'>Opciones</TableCell>
+            )}
           </TableRow>
         </TableHead>
         <TableBody>
@@ -44,6 +53,20 @@ const MenuCollapseTable = ({ data }: IProps) => {
               <TableCell align='center'>{menu.dessert}</TableCell>
               <TableCell align='center'>{menu.drink}</TableCell>
               <TableCell align='center'>{menu.price}</TableCell>
+              {handleIsViewDialog && (
+                <TableCell align='center'>
+                  <Button
+                    variant='contained'
+                    startIcon={<IconPlus />}
+                    onClick={() => {
+                      handleIsViewDialog();
+                      dispatch(setMenuForType(menu));
+                    }}
+                  >
+                    Escoger
+                  </Button>
+                </TableCell>
+              )}
             </TableRow>
           ))}
         </TableBody>
