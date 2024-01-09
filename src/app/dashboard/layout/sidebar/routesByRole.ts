@@ -33,45 +33,6 @@ export const routeAdmin = [
     icon: IconUserPlus,
     href: '/dashboard/restaurants',
   },
-
-  /*{
-    id: uniqueId(),
-    title: 'Shadow',
-    icon: IconCopy,
-    href: '/utilities/shadow',
-  },
-  {
-    navlabel: true,
-    subheader: 'Auth',
-  },
-  {
-    id: uniqueId(),
-    title: 'Login',
-    icon: IconLogin,
-    href: '/authentication/login',
-  },
-  {
-    id: uniqueId(),
-    title: 'Register',
-    icon: IconUserPlus,
-    href: '/authentication/register',
-  },
-  {
-    navlabel: true,
-    subheader: 'Extra',
-  },
-  {
-    id: uniqueId(),
-    title: 'Icons',
-    icon: IconMoodHappy,
-    href: '/icons',
-  },
-  {
-    id: uniqueId(),
-    title: 'Sample Page',
-    icon: IconAperture,
-    href: '/sample-page',
-  },*/
 ];
 
 export const routeUser = [
@@ -97,5 +58,33 @@ export const routeRestaurant = [
     title: 'Administrar menú',
     icon: IconFilePlus,
     href: '/dashboard/restaurants/administrar-menu',
+  },
+  {
+    navlabel: true,
+    subheader: 'Platos para el menú',
+  },
+  {
+    id: uniqueId(),
+    title: 'Administrar sopas',
+    icon: IconFilePlus,
+    href: '/dashboard/restaurants/sopas',
+  },
+  {
+    id: uniqueId(),
+    title: 'Administrar segundos',
+    icon: IconFilePlus,
+    href: '/dashboard/restaurants/segundos',
+  },
+  {
+    id: uniqueId(),
+    title: 'Administrar postres',
+    icon: IconFilePlus,
+    href: '/dashboard/restaurants/postres',
+  },
+  {
+    id: uniqueId(),
+    title: 'Administrar bebidas',
+    icon: IconFilePlus,
+    href: '/dashboard/restaurants/bebidas',
   },
 ];
