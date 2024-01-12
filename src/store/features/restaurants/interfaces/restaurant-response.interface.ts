@@ -30,3 +30,24 @@ export interface IRestaurantsPayload {
   endOrderTime: string;
   deliveryTime: string;
 }
+
+export interface ISoupResponse {
+  data: IDataMenu[];
+  total: number;
+  page: number;
+  limit: number;
+}
+
+export interface IDataMenu {
+  _id: string;
+  name: string;
+  type: string;
+  restaurantId: string;
+  __v: number;
+}
+
+export interface IDataMenuPayload {
+  name: string;
+  type: string;
+  restaurantId: string;
+}
