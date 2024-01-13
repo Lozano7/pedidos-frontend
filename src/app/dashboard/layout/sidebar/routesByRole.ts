@@ -73,18 +73,18 @@ export const routeRestaurant = [
     id: uniqueId(),
     title: 'Administrar segundos',
     icon: IconFilePlus,
-    href: '/dashboard/restaurants/segundos',
+    href: '/dashboard/restaurants/seconds',
   },
   {
     id: uniqueId(),
     title: 'Administrar postres',
     icon: IconFilePlus,
-    href: '/dashboard/restaurants/postres',
+    href: '/dashboard/restaurants/desserts',
   },
   {
     id: uniqueId(),
     title: 'Administrar bebidas',
     icon: IconFilePlus,
-    href: '/dashboard/restaurants/bebidas',
+    href: '/dashboard/restaurants/drinks',
   },
 ];

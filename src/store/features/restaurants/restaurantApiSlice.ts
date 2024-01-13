@@ -3,9 +3,12 @@ import { middlewareApi } from '@/middleware';
 import {
   IDataMenu,
   IDataMenuPayload,
+  IDessertResponse,
+  IDrinkResponse,
   IRestaurant,
   IRestaurantsPayload,
   IRestaurantsResponse,
+  ISecondResponse,
   ISoupResponse,
 } from './interfaces/restaurant-response.interface';
 
@@ -133,8 +136,6 @@ export const restaurantApi = middlewareApi.injectEndpoints({
       { name: string; restaurantId: string }
     >({
       queryFn: async ({ name, restaurantId }) => {
-        console.log('Desde el apislice');
-        console.log(name, restaurantId);
         try {
           const { data } = await mainApi.get<IDataMenu>(
             `soup/${name}/${restaurantId}`
@@ -148,26 +149,46 @@ export const restaurantApi = middlewareApi.injectEndpoints({
     }),
 
     getSeconds: builder.query<
-      IRestaurantsResponse | IRestaurant[],
+      ISecondResponse | IDataMenu[],
       {
+        restaurantId?: string;
         page?: number;
         limit?: number;
         search?: string;
         all?: boolean;
       }
     >({
-      queryFn: async ({ limit, page, search, all }) => {
+      queryFn: async ({ limit, page, search, all, restaurantId }) => {
         try {
-          const { data } = await mainApi.get<
-            IRestaurantsResponse | IRestaurant[]
-          >('restaurants/seconds', {
-            params: {
-              limit,
-              page,
-              search,
-              all,
-            },
-          });
+          const { data } = await mainApi.get<ISecondResponse | IDataMenu[]>(
+            'second',
+            {
+              params: {
+                limit,
+                page,
+                search,
+                all,
+                restaurantId,
+              },
+            }
+          );
+          return { data };
+        } catch (error: any) {
+          console.log(error);
+          return { error };
+        }
+      },
+    }),
+
+    getSecondByNameByRestaurantId: builder.query<
+      IDataMenu,
+      { name: string; restaurantId: string }
+    >({
+      queryFn: async ({ name, restaurantId }) => {
+        try {
+          const { data } = await mainApi.get<IDataMenu>(
+            `second/${name}/${restaurantId}`
+          );
           return { data };
         } catch (error: any) {
           console.log(error);
@@ -177,26 +198,46 @@ export const restaurantApi = middlewareApi.injectEndpoints({
     }),
 
     getDrinks: builder.query<
-      IRestaurantsResponse | IRestaurant[],
+      IDrinkResponse | IDataMenu[],
       {
+        restaurantId?: string;
         page?: number;
         limit?: number;
         search?: string;
         all?: boolean;
       }
     >({
-      queryFn: async ({ limit, page, search, all }) => {
+      queryFn: async ({ limit, page, search, all, restaurantId }) => {
         try {
-          const { data } = await mainApi.get<
-            IRestaurantsResponse | IRestaurant[]
-          >('restaurants/drinks', {
-            params: {
-              limit,
-              page,
-              search,
-              all,
-            },
-          });
+          const { data } = await mainApi.get<IDrinkResponse | IDataMenu[]>(
+            'drink',
+            {
+              params: {
+                limit,
+                page,
+                search,
+                all,
+                restaurantId,
+              },
+            }
+          );
+          return { data };
+        } catch (error: any) {
+          console.log(error);
+          return { error };
+        }
+      },
+    }),
+
+    getDrinkByNameByRestaurantId: builder.query<
+      IDataMenu,
+      { name: string; restaurantId: string }
+    >({
+      queryFn: async ({ name, restaurantId }) => {
+        try {
+          const { data } = await mainApi.get<IDataMenu>(
+            `drink/${name}/${restaurantId}`
+          );
           return { data };
         } catch (error: any) {
           console.log(error);
@@ -206,26 +247,46 @@ export const restaurantApi = middlewareApi.injectEndpoints({
     }),
 
     getDesserts: builder.query<
-      IRestaurantsResponse | IRestaurant[],
+      IDessertResponse | IDataMenu[],
       {
+        restaurantId?: string;
         page?: number;
         limit?: number;
         search?: string;
         all?: boolean;
       }
     >({
-      queryFn: async ({ limit, page, search, all }) => {
+      queryFn: async ({ limit, page, search, all, restaurantId }) => {
         try {
-          const { data } = await mainApi.get<
-            IRestaurantsResponse | IRestaurant[]
-          >('restaurants/desserts', {
-            params: {
-              limit,
-              page,
-              search,
-              all,
-            },
-          });
+          const { data } = await mainApi.get<IDessertResponse | IDataMenu[]>(
+            'dessert',
+            {
+              params: {
+                limit,
+                page,
+                search,
+                all,
+                restaurantId,
+              },
+            }
+          );
+          return { data };
+        } catch (error: any) {
+          console.log(error);
+          return { error };
+        }
+      },
+    }),
+
+    getDessertByNameByRestaurantId: builder.query<
+      IDataMenu,
+      { name: string; restaurantId: string }
+    >({
+      queryFn: async ({ name, restaurantId }) => {
+        try {
+          const { data } = await mainApi.get<IDataMenu>(
+            `dessert/${name}/${restaurantId}`
+          );
           return { data };
         } catch (error: any) {
           console.log(error);
@@ -246,13 +307,10 @@ export const restaurantApi = middlewareApi.injectEndpoints({
       },
     }),
 
-    addSecond: builder.mutation<IRestaurant, IRestaurantsPayload>({
+    addSecond: builder.mutation<IDataMenu, IDataMenuPayload>({
       queryFn: async (body) => {
         try {
-          const { data } = await mainApi.post<IRestaurant>(
-            'restaurants/seconds',
-            body
-          );
+          const { data } = await mainApi.post<IDataMenu>('second', body);
           return { data };
         } catch (error: any) {
           console.log(error);
@@ -261,13 +319,10 @@ export const restaurantApi = middlewareApi.injectEndpoints({
       },
     }),
 
-    addDrink: builder.mutation<IRestaurant, IRestaurantsPayload>({
+    addDrink: builder.mutation<IDataMenu, IDataMenuPayload>({
       queryFn: async (body) => {
         try {
-          const { data } = await mainApi.post<IRestaurant>(
-            'restaurants/drinks',
-            body
-          );
+          const { data } = await mainApi.post<IDataMenu>('drink', body);
           return { data };
         } catch (error: any) {
           console.log(error);
@@ -276,13 +331,10 @@ export const restaurantApi = middlewareApi.injectEndpoints({
       },
     }),
 
-    addDessert: builder.mutation<IRestaurant, IRestaurantsPayload>({
+    addDessert: builder.mutation<IDataMenu, IDataMenuPayload>({
       queryFn: async (body) => {
         try {
-          const { data } = await mainApi.post<IRestaurant>(
-            'restaurants/desserts',
-            body
-          );
+          const { data } = await mainApi.post<IDataMenu>('dessert', body);
           return { data };
         } catch (error: any) {
           console.log(error);
@@ -291,13 +343,20 @@ export const restaurantApi = middlewareApi.injectEndpoints({
       },
     }),
 
-    editSoup: builder.mutation<IDataMenu, IDataMenuPayload>({
-      queryFn: async (body) => {
+    editSoup: builder.mutation<
+      IDataMenu,
+      {
+        name: string;
+        body: IDataMenuPayload;
+      }
+    >({
+      queryFn: async ({ name, body }) => {
         try {
-          const { data } = await mainApi.patch<IDataMenu>(
-            `soup/${body.name}`,
-            body
-          );
+          const { data } = await mainApi.patch<IDataMenu>(`soup/${name}`, {
+            name: body.name,
+            type: body.type,
+            restaurantId: body.restaurantId,
+          });
           return { data };
         } catch (error: any) {
           console.log(error);
@@ -306,13 +365,20 @@ export const restaurantApi = middlewareApi.injectEndpoints({
       },
     }),
 
-    editSecond: builder.mutation<IRestaurant, IRestaurantsPayload>({
-      queryFn: async (body) => {
+    editSecond: builder.mutation<
+      IDataMenu,
+      {
+        name: string;
+        body: IDataMenuPayload;
+      }
+    >({
+      queryFn: async ({ name, body }) => {
         try {
-          const { data } = await mainApi.patch<IRestaurant>(
-            `restaurants/seconds/${body.name}`,
-            body
-          );
+          const { data } = await mainApi.patch<IDataMenu>(`second/${name}`, {
+            name: body.name,
+            type: body.type,
+            restaurantId: body.restaurantId,
+          });
           return { data };
         } catch (error: any) {
           console.log(error);
@@ -320,13 +386,20 @@ export const restaurantApi = middlewareApi.injectEndpoints({
         }
       },
     }),
-    editDrink: builder.mutation<IRestaurant, IRestaurantsPayload>({
-      queryFn: async (body) => {
+    editDrink: builder.mutation<
+      IDataMenu,
+      {
+        name: string;
+        body: IDataMenuPayload;
+      }
+    >({
+      queryFn: async ({ name, body }) => {
         try {
-          const { data } = await mainApi.patch<IRestaurant>(
-            `restaurants/drinks/${body.name}`,
-            body
-          );
+          const { data } = await mainApi.patch<IDataMenu>(`drink/${name}`, {
+            name: body.name,
+            type: body.type,
+            restaurantId: body.restaurantId,
+          });
           return { data };
         } catch (error: any) {
           console.log(error);
@@ -334,13 +407,20 @@ export const restaurantApi = middlewareApi.injectEndpoints({
         }
       },
     }),
-    editDessert: builder.mutation<IRestaurant, IRestaurantsPayload>({
-      queryFn: async (body) => {
+    editDessert: builder.mutation<
+      IDataMenu,
+      {
+        name: string;
+        body: IDataMenuPayload;
+      }
+    >({
+      queryFn: async ({ name, body }) => {
         try {
-          const { data } = await mainApi.patch<IRestaurant>(
-            `restaurants/desserts/${body.name}`,
-            body
-          );
+          const { data } = await mainApi.patch<IDataMenu>(`dessert/${name}`, {
+            name: body.name,
+            type: body.type,
+            restaurantId: body.restaurantId,
+          });
           return { data };
         } catch (error: any) {
           console.log(error);
@@ -361,14 +441,11 @@ export const restaurantApi = middlewareApi.injectEndpoints({
         }
       },
     }),
-    deleteSecond: builder.mutation<
-      { message: string },
-      { id: string | number }
-    >({
-      queryFn: async ({ id }) => {
+    deleteSecond: builder.mutation<IDataMenu, IDataMenuPayload>({
+      queryFn: async (body) => {
         try {
-          const { data } = await mainApi.delete<{ message: string }>(
-            `restaurants/seconds/${id}`
+          const { data } = await mainApi.delete<IDataMenu>(
+            `second/${body.name}/${body.restaurantId}`
           );
           return { data };
         } catch (error: any) {
@@ -377,29 +454,24 @@ export const restaurantApi = middlewareApi.injectEndpoints({
         }
       },
     }),
-    deleteDrink: builder.mutation<{ message: string }, { id: string | number }>(
-      {
-        queryFn: async ({ id }) => {
-          try {
-            const { data } = await mainApi.delete<{ message: string }>(
-              `restaurants/drinks/${id}`
-            );
-            return { data };
-          } catch (error: any) {
-            console.log(error);
-            return { error };
-          }
-        },
-      }
-    ),
-    deleteDessert: builder.mutation<
-      { message: string },
-      { id: string | number }
-    >({
-      queryFn: async ({ id }) => {
+    deleteDrink: builder.mutation<IDataMenu, IDataMenuPayload>({
+      queryFn: async (body) => {
         try {
-          const { data } = await mainApi.delete<{ message: string }>(
-            `restaurants/desserts/${id}`
+          const { data } = await mainApi.delete<IDataMenu>(
+            `drink/${body.name}/${body.restaurantId}`
+          );
+          return { data };
+        } catch (error: any) {
+          console.log(error);
+          return { error };
+        }
+      },
+    }),
+    deleteDessert: builder.mutation<IDataMenu, IDataMenuPayload>({
+      queryFn: async (body) => {
+        try {
+          const { data } = await mainApi.delete<IDataMenu>(
+            `dessert/${body.name}/${body.restaurantId}`
           );
           return { data };
         } catch (error: any) {
@@ -422,6 +494,9 @@ export const {
   useGetSoupsQuery,
   useLazyGetSoupsQuery,
   useLazyGetSoupByNameByRestaurantIdQuery,
+  useLazyGetDessertByNameByRestaurantIdQuery,
+  useLazyGetDrinkByNameByRestaurantIdQuery,
+  useLazyGetSecondByNameByRestaurantIdQuery,
   useGetSecondsQuery,
   useLazyGetSecondsQuery,
   useGetDrinksQuery,

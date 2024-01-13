@@ -37,6 +37,24 @@ export interface ISoupResponse {
   page: number;
   limit: number;
 }
+export interface ISecondResponse {
+  data: IDataMenu[];
+  total: number;
+  page: number;
+  limit: number;
+}
+export interface IDrinkResponse {
+  data: IDataMenu[];
+  total: number;
+  page: number;
+  limit: number;
+}
+export interface IDessertResponse {
+  data: IDataMenu[];
+  total: number;
+  page: number;
+  limit: number;
+}
 
 export interface IDataMenu {
   _id: string;

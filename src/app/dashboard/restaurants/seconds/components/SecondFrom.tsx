@@ -2,9 +2,9 @@
 import ErrorAlert from '@/components/shared/alerts/ErrorAlert';
 import SuccessAlert from '@/components/shared/alerts/SuccessAlert';
 import {
-  useAddSoupMutation,
-  useEditSoupMutation,
-  useLazyGetSoupByNameByRestaurantIdQuery,
+  useAddSecondMutation,
+  useEditSecondMutation,
+  useLazyGetSecondByNameByRestaurantIdQuery,
 } from '@/store/features/restaurants/restaurantApiSlice';
 import {
   Autocomplete,
@@ -23,14 +23,14 @@ const typeMenu = [
   { value: 'D', label: 'Dieta' },
 ];
 
-const SoupFrom = () => {
+const SecondFrom = () => {
   const { name, restaurantId } = useParams();
 
-  const [addSoup, { isLoading, isError, error, isSuccess, reset, data }] =
-    useAddSoupMutation();
+  const [addSecond, { isLoading, isError, error, isSuccess, reset, data }] =
+    useAddSecondMutation();
 
   const [
-    editSoup,
+    editSecond,
     {
       isLoading: isEditing,
       isError: isEditError,
@@ -38,12 +38,12 @@ const SoupFrom = () => {
       error: editError,
       data: editData,
     },
-  ] = useEditSoupMutation();
+  ] = useEditSecondMutation();
 
   const [
-    getSoupByNameAndRestaurantId,
-    { data: soupData, isFetching: isLoadingSoupData },
-  ] = useLazyGetSoupByNameByRestaurantIdQuery();
+    getSecondByNameAndRestaurantId,
+    { data: secondData, isFetching: isLoadingSecondData },
+  ] = useLazyGetSecondByNameByRestaurantIdQuery();
 
   const {
     values,
@@ -65,7 +65,7 @@ const SoupFrom = () => {
     },
     onSubmit: () => {
       if (name && restaurantId) {
-        editSoup({
+        editSecond({
           name: name,
           body: {
             name: values.name,
@@ -74,7 +74,7 @@ const SoupFrom = () => {
           },
         });
       } else {
-        addSoup({
+        addSecond({
           name: values.name,
           restaurantId: values.restaurantId,
           type: values.type.value,
@@ -85,7 +85,7 @@ const SoupFrom = () => {
 
   useEffect(() => {
     if (name && restaurantId) {
-      getSoupByNameAndRestaurantId({
+      getSecondByNameAndRestaurantId({
         name: name,
         restaurantId: restaurantId,
       });
@@ -94,16 +94,16 @@ const SoupFrom = () => {
   }, [name, restaurantId]);
 
   useEffect(() => {
-    if (soupData) {
-      setFieldValue('name', soupData.name);
+    if (secondData) {
+      setFieldValue('name', secondData.name);
       setFieldValue(
         'type',
-        typeMenu.find((t) => t.value === soupData.type)
+        typeMenu.find((t) => t.value === secondData.type)
       );
-      setFieldValue('restaurantId', soupData.restaurantId);
+      setFieldValue('restaurantId', secondData.restaurantId);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [soupData]);
+  }, [secondData]);
 
   useEffect(() => {
     if (isSuccess) {
@@ -127,8 +127,8 @@ const SoupFrom = () => {
               <SuccessAlert
                 message={
                   name && restaurantId
-                    ? 'Sopa editado correctamente'
-                    : 'Sopa creado correctamente'
+                    ? 'Segundo editado correctamente'
+                    : 'Segundo creado correctamente'
                 }
                 handleDismiss={() => reset()}
               />
@@ -148,7 +148,7 @@ const SoupFrom = () => {
             <Grid item xs={12} md={6} lg={6}>
               <InputLabel>Nombre</InputLabel>
               <TextField
-                disabled={isLoadingSoupData}
+                disabled={isLoadingSecondData}
                 placeholder='Ingrese el nombre'
                 id='name'
                 name='name'
@@ -165,18 +165,21 @@ const SoupFrom = () => {
             </Grid>
             <Grid item xs={12} md={6} lg={6}>
               <InputLabel>Tipo</InputLabel>
-              {isLoadingSoupData && soupData ? (
+              {isLoadingSecondData && secondData ? (
                 <CircularProgress />
               ) : (
                 <Autocomplete
-                  disabled={isLoadingSoupData}
+                  disabled={isLoadingSecondData}
                   options={typeMenu}
-                  getOptionLabel={(option) => option.label}
                   id='type'
                   onChange={(event, value) => {
                     setFieldValue('type', value);
                   }}
                   value={values.type}
+                  getOptionLabel={(option) => option.label}
+                  isOptionEqualToValue={(option, value) =>
+                    option.value === value.value
+                  }
                   renderInput={(params: any) => (
                     <TextField
                       {...params}
@@ -212,4 +215,4 @@ const SoupFrom = () => {
   );
 };
 
-export default SoupFrom;
+export default SecondFrom;

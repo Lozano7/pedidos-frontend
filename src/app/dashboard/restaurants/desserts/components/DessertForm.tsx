@@ -2,9 +2,9 @@
 import ErrorAlert from '@/components/shared/alerts/ErrorAlert';
 import SuccessAlert from '@/components/shared/alerts/SuccessAlert';
 import {
-  useAddSoupMutation,
-  useEditSoupMutation,
-  useLazyGetSoupByNameByRestaurantIdQuery,
+  useAddDessertMutation,
+  useEditDessertMutation,
+  useLazyGetDessertByNameByRestaurantIdQuery,
 } from '@/store/features/restaurants/restaurantApiSlice';
 import {
   Autocomplete,
@@ -23,14 +23,14 @@ const typeMenu = [
   { value: 'D', label: 'Dieta' },
 ];
 
-const SoupFrom = () => {
+const DessertForm = () => {
   const { name, restaurantId } = useParams();
 
-  const [addSoup, { isLoading, isError, error, isSuccess, reset, data }] =
-    useAddSoupMutation();
+  const [addDessert, { isLoading, isError, error, isSuccess, reset, data }] =
+    useAddDessertMutation();
 
   const [
-    editSoup,
+    editDessert,
     {
       isLoading: isEditing,
       isError: isEditError,
@@ -38,12 +38,12 @@ const SoupFrom = () => {
       error: editError,
       data: editData,
     },
-  ] = useEditSoupMutation();
+  ] = useEditDessertMutation();
 
   const [
-    getSoupByNameAndRestaurantId,
-    { data: soupData, isFetching: isLoadingSoupData },
-  ] = useLazyGetSoupByNameByRestaurantIdQuery();
+    getDessertByNameAndRestaurantId,
+    { data: dessertData, isFetching: isLoadingDrinkData },
+  ] = useLazyGetDessertByNameByRestaurantIdQuery();
 
   const {
     values,
@@ -65,7 +65,7 @@ const SoupFrom = () => {
     },
     onSubmit: () => {
       if (name && restaurantId) {
-        editSoup({
+        editDessert({
           name: name,
           body: {
             name: values.name,
@@ -74,7 +74,7 @@ const SoupFrom = () => {
           },
         });
       } else {
-        addSoup({
+        addDessert({
           name: values.name,
           restaurantId: values.restaurantId,
           type: values.type.value,
@@ -85,7 +85,7 @@ const SoupFrom = () => {
 
   useEffect(() => {
     if (name && restaurantId) {
-      getSoupByNameAndRestaurantId({
+      getDessertByNameAndRestaurantId({
         name: name,
         restaurantId: restaurantId,
       });
@@ -94,16 +94,16 @@ const SoupFrom = () => {
   }, [name, restaurantId]);
 
   useEffect(() => {
-    if (soupData) {
-      setFieldValue('name', soupData.name);
+    if (dessertData) {
+      setFieldValue('name', dessertData.name);
       setFieldValue(
         'type',
-        typeMenu.find((t) => t.value === soupData.type)
+        typeMenu.find((t) => t.value === dessertData.type)
       );
-      setFieldValue('restaurantId', soupData.restaurantId);
+      setFieldValue('restaurantId', dessertData.restaurantId);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [soupData]);
+  }, [dessertData]);
 
   useEffect(() => {
     if (isSuccess) {
@@ -127,8 +127,8 @@ const SoupFrom = () => {
               <SuccessAlert
                 message={
                   name && restaurantId
-                    ? 'Sopa editado correctamente'
-                    : 'Sopa creado correctamente'
+                    ? 'Postre editado correctamente'
+                    : 'Postre creado correctamente'
                 }
                 handleDismiss={() => reset()}
               />
@@ -148,7 +148,7 @@ const SoupFrom = () => {
             <Grid item xs={12} md={6} lg={6}>
               <InputLabel>Nombre</InputLabel>
               <TextField
-                disabled={isLoadingSoupData}
+                disabled={isLoadingDrinkData}
                 placeholder='Ingrese el nombre'
                 id='name'
                 name='name'
@@ -165,11 +165,11 @@ const SoupFrom = () => {
             </Grid>
             <Grid item xs={12} md={6} lg={6}>
               <InputLabel>Tipo</InputLabel>
-              {isLoadingSoupData && soupData ? (
+              {isLoadingDrinkData && dessertData ? (
                 <CircularProgress />
               ) : (
                 <Autocomplete
-                  disabled={isLoadingSoupData}
+                  disabled={isLoadingDrinkData}
                   options={typeMenu}
                   getOptionLabel={(option) => option.label}
                   id='type'
@@ -212,4 +212,4 @@ const SoupFrom = () => {
   );
 };
 
-export default SoupFrom;
+export default DessertForm;

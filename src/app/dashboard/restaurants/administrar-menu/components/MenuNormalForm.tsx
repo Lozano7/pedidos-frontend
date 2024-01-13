@@ -1,5 +1,12 @@
 'use client';
 import {
+  useGetDessertsQuery,
+  useGetDrinksQuery,
+  useGetSecondsQuery,
+  useGetSoupsQuery,
+} from '@/store/features/restaurants/restaurantApiSlice';
+import {
+  Autocomplete,
   Button,
   CircularProgress,
   Grid,
@@ -30,11 +37,43 @@ const MenuNormalForm = ({
   valuesData,
 }: Props) => {
   const [values, setValues] = useState({
-    soup: '',
-    second: '',
-    drink: '',
-    dessert: '',
+    soup: null as any,
+    second: null as any,
+    drink: null as any,
+    dessert: null as any,
     price: '',
+  });
+
+  const { data: soups, isFetching: isFetchingSoups } = useGetSoupsQuery({
+    all: true,
+    restaurantId:
+      typeof window !== 'undefined'
+        ? localStorage.getItem('restaurantId') || ''
+        : '',
+  });
+  const { data: seconds, isFetching: isFetchingSeconds } = useGetSecondsQuery({
+    all: true,
+    restaurantId:
+      typeof window !== 'undefined'
+        ? localStorage.getItem('restaurantId') || ''
+        : '',
+  });
+
+  const { data: desserts, isFetching: isFetchingDesserts } =
+    useGetDessertsQuery({
+      all: true,
+      restaurantId:
+        typeof window !== 'undefined'
+          ? localStorage.getItem('restaurantId') || ''
+          : '',
+    });
+
+  const { data: drinks, isFetching: isFetchingDrinks } = useGetDrinksQuery({
+    all: true,
+    restaurantId:
+      typeof window !== 'undefined'
+        ? localStorage.getItem('restaurantId') || ''
+        : '',
   });
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -44,15 +83,22 @@ const MenuNormalForm = ({
     });
   };
 
+  const handleSetFieldValue = (name: string, value: any) => {
+    setValues({
+      ...values,
+      [name]: value,
+    });
+  };
+
   const handleAddMenu = () => {
     if (valuesData.menus.length === 0) {
       handleSetData([
         {
           type: type as 'N' | 'D',
-          soup: values.soup,
-          second: values.second,
-          drink: values.drink,
-          dessert: values.dessert,
+          soup: values.soup.name,
+          second: values.second.name,
+          drink: values.drink.name,
+          dessert: values.dessert.name,
           price: values.price,
         },
       ]);
@@ -60,10 +106,10 @@ const MenuNormalForm = ({
       const newMenus = valuesData.menus.filter((menu) => menu.type !== type);
       newMenus.push({
         type: type as 'N' | 'D',
-        soup: values.soup,
-        second: values.second,
-        drink: values.drink,
-        dessert: values.dessert,
+        soup: values.soup.name,
+        second: values.second.name,
+        drink: values.drink.name,
+        dessert: values.dessert.name,
         price: values.price,
       });
       handleSetData(newMenus);
@@ -99,59 +145,107 @@ const MenuNormalForm = ({
       <Grid container item xs={12} spacing={2}>
         <Grid item xs={12} md={6} lg={6}>
           <InputLabel>Sopa</InputLabel>
-          <TextField
-            disabled={isLoadingData}
-            placeholder='Ingrese la sopa'
-            id='soup'
-            name='soup'
-            onChange={handleChange}
-            value={values.soup}
-            fullWidth
-            error={!Boolean(values.soup)}
-            helperText={Boolean(values.soup) ? '' : `La sopa es requerida`}
-          />
+          {isFetchingSoups || isLoadingData ? (
+            <CircularProgress />
+          ) : (
+            <Autocomplete
+              disabled={isLoadingData}
+              options={Array.isArray(soups) ? soups : []}
+              getOptionLabel={(option) => option.name}
+              id='soup'
+              onChange={(event, value) => {
+                handleSetFieldValue('soup', value);
+              }}
+              value={values.soup}
+              renderInput={(params: any) => (
+                <TextField
+                  {...params}
+                  error={!Boolean(values.soup)}
+                  helperText={
+                    Boolean(values.soup) ? '' : `La sopa es requerida`
+                  }
+                />
+              )}
+            />
+          )}
         </Grid>
         <Grid item xs={12} md={6} lg={6}>
           <InputLabel>Segundo</InputLabel>
-          <TextField
-            disabled={isLoadingData}
-            placeholder='Ingrese el segundo'
-            id='second'
-            name='second'
-            onChange={handleChange}
-            value={values.second}
-            fullWidth
-            error={!Boolean(values.second)}
-            helperText={Boolean(values.second) ? '' : `El segundo es requerido`}
-          />
+          {isFetchingSeconds || isLoadingData ? (
+            <CircularProgress />
+          ) : (
+            <Autocomplete
+              disabled={isLoadingData}
+              options={Array.isArray(seconds) ? seconds : []}
+              getOptionLabel={(option) => option.name}
+              id='second'
+              onChange={(event, value) => {
+                handleSetFieldValue('second', value);
+              }}
+              value={values.soup}
+              renderInput={(params: any) => (
+                <TextField
+                  {...params}
+                  error={!Boolean(values.soup)}
+                  helperText={
+                    Boolean(values.soup) ? '' : `El segundo es requerido`
+                  }
+                />
+              )}
+            />
+          )}
         </Grid>
         <Grid item xs={12} md={6} lg={6}>
           <InputLabel>Jugo</InputLabel>
-          <TextField
-            disabled={isLoadingData}
-            placeholder='Ingrese el juego'
-            id='drink'
-            name='drink'
-            onChange={handleChange}
-            value={values.drink}
-            fullWidth
-            error={!Boolean(values.drink)}
-            helperText={Boolean(values.drink) ? '' : `El jugo es requerido`}
-          />
+          {isFetchingDrinks || isLoadingData ? (
+            <CircularProgress />
+          ) : (
+            <Autocomplete
+              disabled={isLoadingData}
+              options={Array.isArray(drinks) ? drinks : []}
+              getOptionLabel={(option) => option.name}
+              id='drink'
+              onChange={(event, value) => {
+                handleSetFieldValue('drink', value);
+              }}
+              value={values.soup}
+              renderInput={(params: any) => (
+                <TextField
+                  {...params}
+                  error={!Boolean(values.soup)}
+                  helperText={
+                    Boolean(values.soup) ? '' : `La bebida es requerida`
+                  }
+                />
+              )}
+            />
+          )}
         </Grid>
         <Grid item xs={12} md={6} lg={6}>
           <InputLabel>Postre</InputLabel>
-          <TextField
-            disabled={isLoadingData}
-            placeholder='Ingrese el postre'
-            id='dessert'
-            name='dessert'
-            onChange={handleChange}
-            value={values.dessert}
-            fullWidth
-            error={!Boolean(values.dessert)}
-            helperText={Boolean(values.dessert) ? '' : `El postre es requerido`}
-          />
+          {isFetchingDesserts || isLoadingData ? (
+            <CircularProgress />
+          ) : (
+            <Autocomplete
+              disabled={isLoadingData}
+              options={Array.isArray(desserts) ? desserts : []}
+              getOptionLabel={(option) => option.name}
+              id='drink'
+              onChange={(event, value) => {
+                handleSetFieldValue('dessert', value);
+              }}
+              value={values.soup}
+              renderInput={(params: any) => (
+                <TextField
+                  {...params}
+                  error={!Boolean(values.soup)}
+                  helperText={
+                    Boolean(values.soup) ? '' : `El postre es requerido`
+                  }
+                />
+              )}
+            />
+          )}
         </Grid>
         <Grid item xs={12} md={6} lg={6}>
           <InputLabel>Precio</InputLabel>
@@ -189,10 +283,10 @@ const MenuNormalForm = ({
           size='large'
           disabled={
             isLoadingData ||
-            !Boolean(values.soup) ||
-            !Boolean(values.second) ||
-            !Boolean(values.drink) ||
-            !Boolean(values.dessert) ||
+            !Boolean(values.soup?.name) ||
+            !Boolean(values.second?.name) ||
+            !Boolean(values.drink?.name) ||
+            !Boolean(values.dessert?.name) ||
             !Boolean(values.price) ||
             isNaN(Number(values.price))
           }

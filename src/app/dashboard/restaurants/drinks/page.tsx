@@ -4,12 +4,13 @@ import ConfirmDialog from '@/components/shared/ConfirmDialog';
 import DeleteButton from '@/components/shared/buttons/DeleteButton';
 import EditButton from '@/components/shared/buttons/EditButton';
 import SearchPaginatedTable from '@/components/shared/tables/SearchPaginatedTable';
-import { ISoupResponse } from '@/store/features/restaurants/interfaces/restaurant-response.interface';
+import { IDrinkResponse } from '@/store/features/restaurants/interfaces/restaurant-response.interface';
 import {
-  useDeleteSoupMutation,
-  useGetSoupsQuery,
+  useDeleteDrinkMutation,
+  useGetDrinksQuery,
 } from '@/store/features/restaurants/restaurantApiSlice';
 import {
+  setDrinkSelected,
   setSoupSelected,
   setSoupsTableLimit,
   setSoupsTablePage,
@@ -23,19 +24,21 @@ import { useEffect, useState } from 'react';
 
 const Page = () => {
   const [openDialog, setOpenDialog] = useState(false);
-  const [soupsData, setSoupsData] = useState<ISoupResponse | null>(null);
+  const [drinksData, setDrinksData] = useState<IDrinkResponse | null>(null);
 
-  const { soupsTable, soupSelected } = useAppSelector(
+  const { drinksTable, drinkSelected } = useAppSelector(
     (state) => state.restaurantsReducer
   );
+
+  //drinksTable, drinkSelected
 
   const router = useRouter();
   const dispatch = useAppDispatch();
   const { data, isLoading, isFetching, isSuccess, isError, error, refetch } =
-    useGetSoupsQuery({
-      page: soupsTable.page,
-      limit: soupsTable.limit,
-      search: soupsTable.search,
+    useGetDrinksQuery({
+      page: drinksTable.page,
+      limit: drinksTable.limit,
+      search: drinksTable.search,
       restaurantId:
         typeof window !== 'undefined'
           ? localStorage.getItem('restaurantId') || ''
@@ -51,24 +54,24 @@ const Page = () => {
       error: errorDelete,
       reset: resetDelete,
     },
-  ] = useDeleteSoupMutation();
+  ] = useDeleteDrinkMutation();
 
   useEffect(() => {
     if (data && !Array.isArray(data)) {
-      setSoupsData(data);
+      setDrinksData(data);
     }
   }, [data]);
 
   return (
     <SimplePage
-      title='Administrar sopas'
-      subtitle='En esta sección puedes administrar las sopas registradas en el restaurante'
+      title='Administrar Bebidas'
+      subtitle='En esta sección puedes administrar las bebidas registradas en el restaurante'
     >
       <Box sx={{ mt: 3 }}>
         <SearchPaginatedTable
           data={
-            soupsData?.data?.map((restaurant, index) => ({
-              number: soupsTable.limit * (soupsTable.page - 1) + index + 1,
+            drinksData?.data?.map((restaurant, index) => ({
+              number: drinksTable.limit * (drinksTable.page - 1) + index + 1,
               name: `${restaurant.name}`,
               type: restaurant.type === 'N' ? 'Normal' : 'Dieta',
               options: restaurant,
@@ -84,10 +87,10 @@ const Page = () => {
           isFetching={isFetching}
           isLoading={isLoading}
           keyExtractor={(row) => String(row.name)}
-          page={soupsTable.page}
-          perPage={soupsTable.limit}
-          search={soupsTable.search}
-          searchPlacehoder='Buscar por su número de identificación'
+          page={drinksTable.page}
+          perPage={drinksTable.limit}
+          search={drinksTable.search}
+          searchPlacehoder='Buscar por su nombre'
           setPage={(page: number) => {
             dispatch(setSoupsTablePage(page));
           }}
@@ -103,14 +106,14 @@ const Page = () => {
             }
             // setSearch
           }
-          total={Number(soupsData?.total || 0)}
+          total={Number(drinksData?.total || 0)}
           numHeader={11}
           ActionButtons={
             <Button
               variant='contained'
               startIcon={<IconPlus />}
               onClick={() => {
-                router.push('/dashboard/restaurants/sopas/create');
+                router.push('/dashboard/restaurants/drinks/create');
               }}
             >
               Agregar
@@ -138,7 +141,7 @@ const Page = () => {
                     onClick={() => {
                       dispatch(setSoupSelected(options));
                       router.push(
-                        `/dashboard/restaurants/sopas/${options.name
+                        `/dashboard/restaurants/drinks/${options.name
                           .split(' ')
                           .join('-')}/${options.restaurantId}`
                       );
@@ -147,7 +150,7 @@ const Page = () => {
                   <DeleteButton
                     onClick={async () => {
                       console.log;
-                      await dispatch(setSoupSelected(options));
+                      await dispatch(setDrinkSelected(options));
                       setOpenDialog(true);
                     }}
                   />
@@ -164,21 +167,21 @@ const Page = () => {
             await refetch();
           }}
           onAccept={async () => {
-            if (soupSelected) {
+            if (drinkSelected) {
               try {
                 await deleteData({
-                  name: soupSelected.name.split(' ').join('-'),
-                  type: soupSelected.type,
-                  restaurantId: soupSelected.restaurantId,
+                  name: drinkSelected.name.split(' ').join('-'),
+                  type: drinkSelected.type,
+                  restaurantId: drinkSelected.restaurantId,
                 }).unwrap();
               } catch (error) {
                 resetDelete();
               }
             }
           }}
-          title='Eliminar sopa'
-          subtitle='¿Estás seguro de que quieres eliminar esta sopa?'
-          successMessage='Sopa eliminada correctamente'
+          title='Eliminar Bebidas'
+          subtitle='¿Estás seguro de que quieres eliminar esta bebida?'
+          successMessage='Bebida eliminada correctamente'
           isSuccess={isDeleteSuccess}
           errorMessage={String((errorDelete as any)?.response?.data?.message)}
           loading={isDeleting}
