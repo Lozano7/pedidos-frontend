@@ -1,9 +1,47 @@
 import { mainApi } from '@/api/mainApi';
 import { middlewareApi } from '@/middleware';
-import { IPedidoPayload, PedidoData } from './interfaces/pedidos.interface';
+import {
+  IPedidoPayload,
+  IPedidosResponse,
+  PedidoData,
+} from './interfaces/pedidos.interface';
 
 export const pedidoApi = middlewareApi.injectEndpoints({
   endpoints: (builder) => ({
+    getPedidos: builder.query<
+      IPedidosResponse | PedidoData[],
+      {
+        page?: number;
+        limit?: number;
+        search?: string;
+        all?: boolean;
+        restaurantId?: string;
+        clientId?: string;
+      }
+    >({
+      queryFn: async ({ limit, page, search, all, restaurantId, clientId }) => {
+        try {
+          const { data } = await mainApi.get<IPedidosResponse | PedidoData[]>(
+            'pedidos',
+            {
+              params: {
+                limit,
+                page,
+                search,
+                all,
+                restaurantId,
+                clientId,
+              },
+            }
+          );
+          return { data };
+        } catch (error: any) {
+          console.log(error);
+          return { error };
+        }
+      },
+    }),
+
     addPedido: builder.mutation<PedidoData, IPedidoPayload>({
       queryFn: async (body) => {
         try {
@@ -39,4 +77,8 @@ export const pedidoApi = middlewareApi.injectEndpoints({
   }),
 });
 
-export const { useAddPedidoMutation, useLazyGetIsExistPedidoQuery } = pedidoApi;
+export const {
+  useGetPedidosQuery,
+  useAddPedidoMutation,
+  useLazyGetIsExistPedidoQuery,
+} = pedidoApi;

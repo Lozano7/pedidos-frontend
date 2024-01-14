@@ -104,7 +104,7 @@ const Page = () => {
             // setSearch
           }
           total={Number(soupsData?.total || 0)}
-          numHeader={11}
+          numHeader={4}
           ActionButtons={
             <Button
               variant='contained'

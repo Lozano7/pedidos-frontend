@@ -1,4 +1,9 @@
-import { IconFilePlus, IconFolder, IconUserPlus } from '@tabler/icons-react';
+import {
+  IconChecklist,
+  IconFilePlus,
+  IconFolder,
+  IconUserPlus,
+} from '@tabler/icons-react';
 import { uniqueId } from 'lodash';
 
 export const routeAdmin = [
@@ -46,9 +51,29 @@ export const routeUser = [
     icon: IconFilePlus,
     href: '/dashboard/pedidos',
   },
+  {
+    navlabel: true,
+    subheader: 'Pedidos',
+  },
+  {
+    id: uniqueId(),
+    title: 'Ver pedidos',
+    icon: IconChecklist,
+    href: '/dashboard/pedidos/ver-pedidos',
+  },
 ];
 
 export const routeRestaurant = [
+  {
+    navlabel: true,
+    subheader: 'Pedidos',
+  },
+  {
+    id: uniqueId(),
+    title: 'Ver pedidos',
+    icon: IconChecklist,
+    href: '/dashboard/restaurants/pedidos',
+  },
   {
     navlabel: true,
     subheader: 'Menú',

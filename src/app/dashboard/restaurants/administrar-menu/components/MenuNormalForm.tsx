@@ -13,8 +13,9 @@ import {
   InputLabel,
   TextField,
 } from '@mui/material';
+import { IconCheck, IconX } from '@tabler/icons-react';
 import dayjs from 'dayjs';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { IMenu } from '../interfaces/menu.interface';
 
 interface Props {
@@ -37,29 +38,37 @@ const MenuNormalForm = ({
   valuesData,
 }: Props) => {
   const [values, setValues] = useState({
-    soup: null as any,
-    second: null as any,
-    drink: null as any,
-    dessert: null as any,
+    soup: '',
+    second: '',
+    drink: '',
+    dessert: '',
     price: '',
   });
 
-  const { data: soups, isFetching: isFetchingSoups } = useGetSoupsQuery({
-    all: true,
-    restaurantId:
-      typeof window !== 'undefined'
-        ? localStorage.getItem('restaurantId') || ''
-        : '',
-  });
-  const { data: seconds, isFetching: isFetchingSeconds } = useGetSecondsQuery({
-    all: true,
-    restaurantId:
-      typeof window !== 'undefined'
-        ? localStorage.getItem('restaurantId') || ''
-        : '',
-  });
+  const [soups, setSoups] = useState<string[]>([]);
+  const [seconds, setSeconds] = useState<string[]>([]);
+  const [drinks, setDrinks] = useState<string[]>([]);
+  const [desserts, setDesserts] = useState<string[]>([]);
 
-  const { data: desserts, isFetching: isFetchingDesserts } =
+  const buttonAdd = useRef<HTMLButtonElement>(null);
+
+  const { data: soupsData, isFetching: isFetchingSoups } = useGetSoupsQuery({
+    all: true,
+    restaurantId:
+      typeof window !== 'undefined'
+        ? localStorage.getItem('restaurantId') || ''
+        : '',
+  });
+  const { data: secondsData, isFetching: isFetchingSeconds } =
+    useGetSecondsQuery({
+      all: true,
+      restaurantId:
+        typeof window !== 'undefined'
+          ? localStorage.getItem('restaurantId') || ''
+          : '',
+    });
+
+  const { data: dessertsData, isFetching: isFetchingDesserts } =
     useGetDessertsQuery({
       all: true,
       restaurantId:
@@ -68,7 +77,7 @@ const MenuNormalForm = ({
           : '',
     });
 
-  const { data: drinks, isFetching: isFetchingDrinks } = useGetDrinksQuery({
+  const { data: drinksData, isFetching: isFetchingDrinks } = useGetDrinksQuery({
     all: true,
     restaurantId:
       typeof window !== 'undefined'
@@ -96,9 +105,9 @@ const MenuNormalForm = ({
         {
           type: type as 'N' | 'D',
           soup: values.soup,
-          second: values.second.name,
-          drink: values.drink.name,
-          dessert: values.dessert.name,
+          second: values.second,
+          drink: values.drink,
+          dessert: values.dessert,
           price: values.price,
         },
       ]);
@@ -107,14 +116,51 @@ const MenuNormalForm = ({
       newMenus.push({
         type: type as 'N' | 'D',
         soup: values.soup,
-        second: values.second.name,
-        drink: values.drink.name,
-        dessert: values.dessert.name,
+        second: values.second,
+        drink: values.drink,
+        dessert: values.dessert,
         price: values.price,
       });
       handleSetData(newMenus);
     }
+    //Cambiar el color de buttonAdd por un segundo y luego volverlo a la normalidad
+    if (buttonAdd.current) {
+      buttonAdd.current.style.backgroundColor = '#4caf50';
+      setTimeout(() => {
+        if (buttonAdd.current) {
+          buttonAdd.current.style.backgroundColor = '#556cd6';
+        }
+      }, 500);
+    }
   };
+
+  useEffect(() => {
+    if (soupsData && Array.isArray(soupsData)) {
+      const soupsMap = soupsData.map((soup) => soup.name);
+      setSoups(soupsMap);
+    }
+  }, [soupsData]);
+
+  useEffect(() => {
+    if (secondsData && Array.isArray(secondsData)) {
+      const secondsMap = secondsData.map((second) => second.name);
+      setSeconds(secondsMap);
+    }
+  }, [secondsData]);
+
+  useEffect(() => {
+    if (dessertsData && Array.isArray(dessertsData)) {
+      const dessertsMap = dessertsData.map((dessert) => dessert.name);
+      setDesserts(dessertsMap);
+    }
+  }, [dessertsData]);
+
+  useEffect(() => {
+    if (drinksData && Array.isArray(drinksData)) {
+      const drinksMap = drinksData.map((drink) => drink.name);
+      setDrinks(drinksMap);
+    }
+  }, [drinksData]);
 
   useEffect(() => {
     if (valuesData.menus.length > 0) {
@@ -150,18 +196,14 @@ const MenuNormalForm = ({
           ) : (
             <Autocomplete
               disabled={isLoadingData}
-              options={
-                Array.isArray(soups) ? soups.map((soup) => soup.name) : []
-              }
+              options={soups}
               id='soup'
               onChange={(event, value) => {
                 handleSetFieldValue('soup', value);
               }}
               value={
-                values.soup && Array.isArray(soups)
-                  ? soups
-                      .map((soup) => soup.name)
-                      .find((soup) => soup === values.soup) || null
+                values.soup && soups
+                  ? soups.find((soup) => soup === values.soup) || null
                   : null
               }
               renderInput={(params: any) => (
@@ -183,13 +225,16 @@ const MenuNormalForm = ({
           ) : (
             <Autocomplete
               disabled={isLoadingData}
-              options={Array.isArray(seconds) ? seconds : []}
-              getOptionLabel={(option) => option.name}
+              options={seconds}
               id='second'
               onChange={(event, value) => {
                 handleSetFieldValue('second', value);
               }}
-              value={values.second}
+              value={
+                values.second && seconds
+                  ? seconds.find((second) => second === values.second) || null
+                  : null
+              }
               renderInput={(params: any) => (
                 <TextField
                   {...params}
@@ -209,13 +254,16 @@ const MenuNormalForm = ({
           ) : (
             <Autocomplete
               disabled={isLoadingData}
-              options={Array.isArray(drinks) ? drinks : []}
-              getOptionLabel={(option) => option.name}
+              options={drinks}
               id='drink'
               onChange={(event, value) => {
                 handleSetFieldValue('drink', value);
               }}
-              value={values.drink}
+              value={
+                values.drink && drinks
+                  ? drinks.find((drink) => drink === values.drink) || null
+                  : null
+              }
               renderInput={(params: any) => (
                 <TextField
                   {...params}
@@ -235,13 +283,17 @@ const MenuNormalForm = ({
           ) : (
             <Autocomplete
               disabled={isLoadingData}
-              options={Array.isArray(desserts) ? desserts : []}
-              getOptionLabel={(option) => option.name}
+              options={desserts}
               id='drink'
               onChange={(event, value) => {
                 handleSetFieldValue('dessert', value);
               }}
-              value={values.dessert}
+              value={
+                values.dessert && desserts
+                  ? desserts.find((dessert) => dessert === values.dessert) ||
+                    null
+                  : null
+              }
               renderInput={(params: any) => (
                 <TextField
                   {...params}
@@ -285,23 +337,25 @@ const MenuNormalForm = ({
 
       <Grid item xs={12} md={6}>
         <Button
+          ref={buttonAdd}
           onClick={handleAddMenu}
           variant='contained'
           size='large'
           disabled={
             isLoadingData ||
             !Boolean(values.soup) ||
-            !Boolean(values.second?.name) ||
-            !Boolean(values.drink?.name) ||
-            !Boolean(values.dessert?.name) ||
+            !Boolean(values.second) ||
+            !Boolean(values.drink) ||
+            !Boolean(values.dessert) ||
             !Boolean(values.price) ||
             isNaN(Number(values.price))
           }
           endIcon={isLoadingData && <CircularProgress size={20} />}
         >
-          {isEditing ? 'Editar' : 'Agregar'}
+          <IconCheck size={20} />
         </Button>
         <Button
+          color='error'
           sx={{
             ml: 2,
           }}
@@ -323,7 +377,7 @@ const MenuNormalForm = ({
           disabled={isLoadingData}
           endIcon={isLoadingData && <CircularProgress size={20} />}
         >
-          Eliminar
+          <IconX size={20} />
         </Button>
       </Grid>
     </Grid>

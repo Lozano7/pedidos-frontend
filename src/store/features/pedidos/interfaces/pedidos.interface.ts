@@ -1,3 +1,10 @@
+export interface IPedidosResponse {
+  data: PedidoData[];
+  total: number;
+  page: number;
+  limit: number;
+}
+
 export interface IPedidoPayload {
   nameClient: string;
   restaurantId: string;
