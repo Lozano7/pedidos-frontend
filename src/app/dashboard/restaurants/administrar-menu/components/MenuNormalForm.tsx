@@ -95,7 +95,7 @@ const MenuNormalForm = ({
       handleSetData([
         {
           type: type as 'N' | 'D',
-          soup: values.soup.name,
+          soup: values.soup,
           second: values.second.name,
           drink: values.drink.name,
           dessert: values.dessert.name,
@@ -106,7 +106,7 @@ const MenuNormalForm = ({
       const newMenus = valuesData.menus.filter((menu) => menu.type !== type);
       newMenus.push({
         type: type as 'N' | 'D',
-        soup: values.soup.name,
+        soup: values.soup,
         second: values.second.name,
         drink: values.drink.name,
         dessert: values.dessert.name,
@@ -150,13 +150,20 @@ const MenuNormalForm = ({
           ) : (
             <Autocomplete
               disabled={isLoadingData}
-              options={Array.isArray(soups) ? soups : []}
-              getOptionLabel={(option) => option.name}
+              options={
+                Array.isArray(soups) ? soups.map((soup) => soup.name) : []
+              }
               id='soup'
               onChange={(event, value) => {
                 handleSetFieldValue('soup', value);
               }}
-              value={values.soup}
+              value={
+                values.soup && Array.isArray(soups)
+                  ? soups
+                      .map((soup) => soup.name)
+                      .find((soup) => soup === values.soup) || null
+                  : null
+              }
               renderInput={(params: any) => (
                 <TextField
                   {...params}
@@ -182,11 +189,11 @@ const MenuNormalForm = ({
               onChange={(event, value) => {
                 handleSetFieldValue('second', value);
               }}
-              value={values.soup}
+              value={values.second}
               renderInput={(params: any) => (
                 <TextField
                   {...params}
-                  error={!Boolean(values.soup)}
+                  error={!Boolean(values.second)}
                   helperText={
                     Boolean(values.soup) ? '' : `El segundo es requerido`
                   }
@@ -208,13 +215,13 @@ const MenuNormalForm = ({
               onChange={(event, value) => {
                 handleSetFieldValue('drink', value);
               }}
-              value={values.soup}
+              value={values.drink}
               renderInput={(params: any) => (
                 <TextField
                   {...params}
-                  error={!Boolean(values.soup)}
+                  error={!Boolean(values.drink)}
                   helperText={
-                    Boolean(values.soup) ? '' : `La bebida es requerida`
+                    Boolean(values.drink) ? '' : `La bebida es requerida`
                   }
                 />
               )}
@@ -234,13 +241,13 @@ const MenuNormalForm = ({
               onChange={(event, value) => {
                 handleSetFieldValue('dessert', value);
               }}
-              value={values.soup}
+              value={values.dessert}
               renderInput={(params: any) => (
                 <TextField
                   {...params}
-                  error={!Boolean(values.soup)}
+                  error={!Boolean(values.dessert)}
                   helperText={
-                    Boolean(values.soup) ? '' : `El postre es requerido`
+                    Boolean(values.dessert) ? '' : `El postre es requerido`
                   }
                 />
               )}
@@ -283,7 +290,7 @@ const MenuNormalForm = ({
           size='large'
           disabled={
             isLoadingData ||
-            !Boolean(values.soup?.name) ||
+            !Boolean(values.soup) ||
             !Boolean(values.second?.name) ||
             !Boolean(values.drink?.name) ||
             !Boolean(values.dessert?.name) ||
