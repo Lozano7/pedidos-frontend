@@ -8,6 +8,7 @@ export interface IPedidosResponse {
 export interface IPedidoPayload {
   nameClient: string;
   restaurantId: string;
+  nameRestaurant: string;
   clientId: string;
   date: string;
   typeMenu: string;
@@ -21,6 +22,7 @@ export interface IPedidoPayload {
 export interface PedidoData {
   _id: string;
   nameClient: string;
+  nameRestaurant: string;
   restaurantId: string;
   clientId: string;
   date: string;

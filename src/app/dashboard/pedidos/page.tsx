@@ -234,6 +234,7 @@ const Page = () => {
                           user?.restaurantId ||
                           localStorage.getItem('restaurantId') ||
                           '',
+                        nameRestaurant: menuForType.restaurantName || '',
                         date: dayjs().format('MM/DD/YYYY'),
                         dessert: menuForType.dessert,
                         drink: menuForType.drink,

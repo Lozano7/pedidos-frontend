@@ -60,7 +60,12 @@ const MenuCollapseTable = ({ data, handleIsViewDialog }: IProps) => {
                     startIcon={<IconPlus />}
                     onClick={() => {
                       handleIsViewDialog();
-                      dispatch(setMenuForType(menu));
+                      dispatch(
+                        setMenuForType({
+                          ...menu,
+                          restaurantName: data.restaurantName,
+                        })
+                      );
                     }}
                   >
                     Escoger

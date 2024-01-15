@@ -5,6 +5,7 @@ export interface IMenu {
   drink: string;
   price: string;
   dessert: string;
+  restaurantName?: string;
 }
 
 export interface IMenuResponseList {

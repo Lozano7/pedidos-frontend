@@ -49,7 +49,7 @@ const Page = () => {
           data={
             pedidosData?.data?.map((pedido, index) => ({
               number: soupsTable.limit * (soupsTable.page - 1) + index + 1,
-              name: `${pedido.nameClient}`,
+              name: `${pedido.nameRestaurant || ''}`,
               type: pedido.typeMenu === 'N' ? 'Normal' : 'Dieta',
               soup: pedido.soup,
               second: pedido.second,
@@ -73,7 +73,7 @@ const Page = () => {
           page={soupsTable.page}
           perPage={soupsTable.limit}
           search={soupsTable.search}
-          searchPlacehoder='Buscar por fecha (mes/día/año) o por su tipo de menu'
+          searchPlacehoder='Buscar por fecha (mes/día/año)'
           setPage={(page: number) => {
             dispatch(setSoupsTablePage(page));
           }}
