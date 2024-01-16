@@ -5,20 +5,6 @@ export interface IPedidosResponse {
   limit: number;
 }
 
-export interface IPedidoPayload {
-  nameClient: string;
-  restaurantId: string;
-  nameRestaurant: string;
-  clientId: string;
-  date: string;
-  typeMenu: string;
-  soup: string;
-  second: string;
-  drink: string;
-  dessert: string;
-  price: number | string;
-}
-
 export interface PedidoData {
   _id: string;
   nameClient: string;
@@ -33,4 +19,18 @@ export interface PedidoData {
   dessert: string;
   price: number;
   __v: number;
+}
+
+export interface IPedidoPayload {
+  nameClient: string;
+  restaurantId: string;
+  nameRestaurant: string;
+  clientId: string;
+  date: string;
+  typeMenu: string;
+  soup: string;
+  second: string;
+  drink: string;
+  dessert: string;
+  price: number | string;
 }
