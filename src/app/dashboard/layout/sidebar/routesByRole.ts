@@ -14,9 +14,15 @@ export const routeAdmin = [
 
   {
     id: uniqueId(),
-    title: 'Reportes de consumo',
+    title: 'Estadísticas del día',
     icon: IconFolder,
-    href: '/dashboard/reportes-consumo',
+    href: '/dashboard/reports',
+  },
+  {
+    id: uniqueId(),
+    title: 'Consumo de los usuarios',
+    icon: IconFolder,
+    href: '/dashboard/reports/consumo-de-usuarios',
   },
   {
     navlabel: true,
