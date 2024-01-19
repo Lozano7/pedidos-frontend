@@ -242,6 +242,9 @@ const Page = () => {
                         second: menuForType.second,
                         soup: menuForType.soup,
                         typeMenu: menuForType.type,
+                        roles: JSON.parse(
+                          localStorage.getItem('userRoles') || ''
+                        ),
                       }).unwrap();
                     } catch (error) {
                       resetAddPedido();

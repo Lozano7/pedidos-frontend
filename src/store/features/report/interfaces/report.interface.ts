@@ -7,6 +7,21 @@ export interface IReportDashboardData {
   cantidadUsuarios: number | string;
   collaborators: number;
   interns: number;
+  latestUsers: LatestUser[];
+}
+
+export interface LatestUser {
+  _id: string;
+  email: string;
+  password: string;
+  name: string;
+  lastName: string;
+  identification: string;
+  restaurantId: string;
+  roles: string[];
+  createdAt: Date;
+  updatedAt: Date;
+  __v: number;
 }
 
 export interface Restaurant {

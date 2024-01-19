@@ -14,6 +14,8 @@ export interface UserData {
   lastName: string;
   restaurantId: string;
   roles: string[];
+  createdAt: Date;
+  updatedAt: Date;
   __v: number;
 }
 

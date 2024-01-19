@@ -33,4 +33,5 @@ export interface IPedidoPayload {
   drink: string;
   dessert: string;
   price: number | string;
+  roles: string[];
 }
