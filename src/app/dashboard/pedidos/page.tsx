@@ -230,10 +230,7 @@ const Page = () => {
                           user?.identification ||
                           localStorage.getItem('pedidos-user-identification') ||
                           '',
-                        restaurantId:
-                          user?.restaurantId ||
-                          localStorage.getItem('restaurantId') ||
-                          '',
+                        restaurantId: menuForType.restaurantId || '',
                         nameRestaurant: menuForType.restaurantName || '',
                         date: dayjs().format('MM/DD/YYYY'),
                         dessert: menuForType.dessert,

@@ -64,6 +64,7 @@ const MenuCollapseTable = ({ data, handleIsViewDialog }: IProps) => {
                         setMenuForType({
                           ...menu,
                           restaurantName: data.restaurantName,
+                          restaurantId: data.restaurantId,
                         })
                       );
                     }}
