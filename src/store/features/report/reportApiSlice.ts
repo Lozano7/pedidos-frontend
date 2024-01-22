@@ -1,6 +1,9 @@
 import { mainApi } from '@/api/mainApi';
 import { middlewareApi } from '@/middleware';
-import { IReportDashboardConsumptionData } from './interfaces/consumption.interface';
+import {
+  DashboardConsumptionData,
+  IReportDashboardConsumptionData,
+} from './interfaces/consumption.interface';
 import { IReportDashboardData } from './interfaces/report.interface';
 
 export const reportApi = middlewareApi.injectEndpoints({
@@ -28,9 +31,18 @@ export const reportApi = middlewareApi.injectEndpoints({
         all?: boolean;
         startDate?: string;
         endDate?: string;
+        roles?: string;
       }
     >({
-      queryFn: async ({ limit, page, search, all, startDate, endDate }) => {
+      queryFn: async ({
+        limit,
+        page,
+        search,
+        all,
+        startDate,
+        endDate,
+        roles,
+      }) => {
         try {
           const { data } = await mainApi.get<IReportDashboardConsumptionData>(
             'report/dashboard/consumption',
@@ -42,8 +54,44 @@ export const reportApi = middlewareApi.injectEndpoints({
                 all,
                 startDate,
                 endDate,
+                roles,
               },
             }
+          );
+          return { data };
+        } catch (error: any) {
+          console.log(error);
+          return { error };
+        }
+      },
+    }),
+
+    getDownloadExel: builder.mutation<string, DashboardConsumptionData>({
+      queryFn: async ({ name, pedidos }) => {
+        try {
+          const { data } = await mainApi.post<any>(
+            'report/dashboard/generate-exel',
+            {
+              name,
+              pedidos,
+            }
+          );
+          return { data };
+        } catch (error: any) {
+          console.log(error);
+          return { error };
+        }
+      },
+    }),
+    getDownloadAllClientDataExel: builder.mutation<
+      string,
+      DashboardConsumptionData[]
+    >({
+      queryFn: async (body) => {
+        try {
+          const { data } = await mainApi.post<any>(
+            'report/dashboard/generate-exel/all-clients',
+            body
           );
           return { data };
         } catch (error: any) {
@@ -55,5 +103,10 @@ export const reportApi = middlewareApi.injectEndpoints({
   }),
 });
 
-export const { useGetDataDashboardQuery, useGetDataDashboardConsumptionQuery } =
-  reportApi;
+export const {
+  useGetDataDashboardQuery,
+  useGetDataDashboardConsumptionQuery,
+  useLazyGetDataDashboardConsumptionQuery,
+  useGetDownloadExelMutation,
+  useGetDownloadAllClientDataExelMutation,
+} = reportApi;

@@ -584,7 +584,16 @@ export const SearchPaginatedTable = <T extends {}>({
                             justifyContent='space-around'
                             alignItems='center'
                           >
-                            <Grid item>{headers[key as keyof T]}</Grid>
+                            <Grid item>
+                              <Typography
+                                sx={{
+                                  fontSize: '14px',
+                                  fontWeight: '800',
+                                }}
+                              >
+                                {headers[key as keyof T]}
+                              </Typography>
+                            </Grid>
                             {Object.keys(listFilterArrows).some(
                               (e) => e === key
                             ) && (
@@ -644,7 +653,6 @@ export const SearchPaginatedTable = <T extends {}>({
                                     )
                                   }
                                 />
-                                {/* </Grid> */}
                               </Grid>
                             )}
                           </Grid>
@@ -660,11 +668,6 @@ export const SearchPaginatedTable = <T extends {}>({
                 {isFetching
                   ? renderSkeletonRows(perPage, numHeader)
                   : renderRows()}
-                {/*  </ScrollBar> */}
-
-                {/* {error && <tr><td> <Alert severity='error'> {String(error)}</Alert></td></tr>} */}
-
-                {/* {error && renderErrorOrEmptyRow(numHeader, error as string)} */}
                 {data?.length === 0 &&
                   !isFetching &&
                   renderErrorOrEmptyRow(numHeader)}
