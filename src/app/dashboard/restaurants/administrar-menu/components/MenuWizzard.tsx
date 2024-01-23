@@ -23,26 +23,25 @@ import {
 import { DatePicker } from '@mui/x-date-pickers';
 import dayjs from 'dayjs';
 import { useFormik } from 'formik';
-import dynamic from 'next/dynamic';
 import { useParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
+
+import { v4 as uuidv4 } from 'uuid';
 import { IMenu } from '../interfaces/menu.interface';
 import { menuSchema } from '../schemas/menuSchema';
+import { MenuControlDieta } from './MenuControlDieta';
+import MenuControlNormal from './MenuControlNormal';
 
 const steps = [
   {
     label: 'Menu Normal',
     type: 'N',
-    Component: dynamic(() => import('./MenuNormalForm'), {
-      ssr: false, // Esto desactivará la renderización del lado del servidor
-    }),
+    Component: MenuControlNormal,
   },
   {
     label: 'Menu de Dieta',
     type: 'D',
-    Component: dynamic(() => import('./MenuNormalForm'), {
-      ssr: false, // Esto desactivará la renderización del lado del servidor
-    }),
+    Component: MenuControlDieta,
   },
 ];
 
@@ -100,7 +99,27 @@ export const MenuWizzard = () => {
           editMenu({
             fecha: fecha,
             body: {
-              menus: values.menus,
+              menus: values.menus.map(
+                ({
+                  dessert,
+                  drink,
+                  price,
+                  second,
+                  soup,
+                  type,
+                  restaurantId,
+                  restaurantName,
+                }) => ({
+                  dessert,
+                  drink,
+                  price,
+                  second,
+                  soup,
+                  type,
+                  restaurantId,
+                  restaurantName,
+                })
+              ),
               restaurantId: values.restaurantId,
               date: fecha.split('-').join('/'),
               restaurantName: values.restaurantName,
@@ -113,7 +132,27 @@ export const MenuWizzard = () => {
         } else {
           addMenu({
             date: values.date.format('MM/DD/YYYY'),
-            menus: values.menus,
+            menus: values.menus.map(
+              ({
+                dessert,
+                drink,
+                price,
+                second,
+                soup,
+                type,
+                restaurantId,
+                restaurantName,
+              }) => ({
+                dessert,
+                drink,
+                price,
+                second,
+                soup,
+                type,
+                restaurantId,
+                restaurantName,
+              })
+            ),
             restaurantId: values.restaurantId,
             restaurantName: values.restaurantName,
             restaurantAddress: values.restaurantAddress,
@@ -124,9 +163,6 @@ export const MenuWizzard = () => {
         }
       },
     });
-
-  console.log('erros', errors);
-  console.log('isValid', isValid);
 
   useEffect(() => {
     if (restaurantData) {
@@ -155,7 +191,10 @@ export const MenuWizzard = () => {
   useEffect(() => {
     if (menuData) {
       setFieldValue('date', dayjs(menuData.date));
-      setFieldValue('menus', menuData.menus);
+      setFieldValue(
+        'menus',
+        menuData.menus.map((menu) => ({ ...menu, uuid: uuidv4() }))
+      );
       setFieldValue('restaurantId', menuData.restaurantId);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -250,16 +289,13 @@ export const MenuWizzard = () => {
                       </StepButton>
                       <StepContent>
                         <Component
-                          handleSetData={(data) => {
-                            setFieldValue('menus', data);
-                          }}
                           type={type}
-                          isLoadingData={
-                            isLoadingMenuData || isFetchingRestaurantData
-                          }
                           isEditing={Boolean(fecha)}
-                          valuesData={values}
                           key={`menu-${index}`}
+                          isFetchingRestaurantData={isFetchingRestaurantData}
+                          isLoadingMenuData={isLoadingMenuData}
+                          setFieldValue={setFieldValue}
+                          values={values}
                         />
                       </StepContent>
                     </Step>

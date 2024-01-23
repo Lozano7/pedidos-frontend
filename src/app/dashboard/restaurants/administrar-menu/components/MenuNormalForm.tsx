@@ -28,6 +28,8 @@ interface Props {
     menus: IMenu[];
     restaurantId: string;
   };
+  uuid: string;
+  onRemove: (uuidToRemove: string) => void;
 }
 
 const MenuNormalForm = ({
@@ -36,6 +38,8 @@ const MenuNormalForm = ({
   isEditing,
   type,
   valuesData,
+  onRemove,
+  uuid,
 }: Props) => {
   const [values, setValues] = useState({
     soup: '',
@@ -103,6 +107,7 @@ const MenuNormalForm = ({
     if (valuesData.menus.length === 0) {
       handleSetData([
         {
+          uuid,
           type: type as 'N' | 'D',
           soup: values.soup,
           second: values.second,
@@ -112,8 +117,9 @@ const MenuNormalForm = ({
         },
       ]);
     } else {
-      const newMenus = valuesData.menus.filter((menu) => menu.type !== type);
+      const newMenus = valuesData.menus.filter((menu) => menu.uuid !== uuid);
       newMenus.push({
+        uuid,
         type: type as 'N' | 'D',
         soup: values.soup,
         second: values.second,
@@ -164,7 +170,11 @@ const MenuNormalForm = ({
 
   useEffect(() => {
     if (valuesData.menus.length > 0) {
-      const menu = valuesData.menus.find((menu) => menu.type === type);
+      const menu = valuesData.menus.find((menu) => menu.uuid === uuid);
+
+      console.log('uuid', uuid);
+      console.log('menu', menu);
+
       if (menu) {
         setValues({
           soup: menu.soup,
@@ -361,16 +371,10 @@ const MenuNormalForm = ({
           }}
           onClick={() => {
             const newMenus = valuesData.menus.filter(
-              (menu) => menu.type !== type
+              (menu) => menu.uuid !== uuid
             );
             handleSetData(newMenus);
-            setValues({
-              soup: '',
-              second: '',
-              drink: '',
-              dessert: '',
-              price: '',
-            });
+            onRemove(uuid);
           }}
           variant='contained'
           size='large'

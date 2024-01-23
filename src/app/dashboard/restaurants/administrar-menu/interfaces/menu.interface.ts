@@ -7,6 +7,7 @@ export interface IMenu {
   dessert: string;
   restaurantName?: string;
   restaurantId?: string;
+  uuid?: string;
 }
 
 export interface IMenuResponseList {
