@@ -1,20 +1,31 @@
 'use client';
 import SimplePage from '@/components/sample-page/page';
+import ConfirmDialog from '@/components/shared/ConfirmDialog';
+import DeleteButton from '@/components/shared/buttons/DeleteButton';
 import SearchPaginatedTable from '@/components/shared/tables/SearchPaginatedTable';
-import { IPedidosResponse } from '@/store/features/pedidos/interfaces/pedidos.interface';
-import { useGetPedidosQuery } from '@/store/features/pedidos/pedidosApiSlice';
+import {
+  IPedidosResponse,
+  PedidoData,
+} from '@/store/features/pedidos/interfaces/pedidos.interface';
+import {
+  useDeletePedidoMutation,
+  useGetPedidosQuery,
+} from '@/store/features/pedidos/pedidosApiSlice';
 import {
   setSoupsTableLimit,
   setSoupsTablePage,
   setSoupsTableSearch,
 } from '@/store/features/restaurants/restaurantSlice';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
-import { Box } from '@mui/material';
+import { Box, Stack } from '@mui/material';
+import dayjs from 'dayjs';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
 const Page = () => {
   const [pedidosData, setPedidosData] = useState<IPedidosResponse | null>(null);
+  const [openDialog, setOpenDialog] = useState(false);
+  const [pedidoSelected, setPedidoSelected] = useState<PedidoData | null>(null);
 
   const { soupsTable, soupSelected } = useAppSelector(
     (state) => state.restaurantsReducer
@@ -31,7 +42,19 @@ const Page = () => {
         typeof window !== 'undefined'
           ? localStorage.getItem('pedidos-user-identification') || ''
           : '',
+      date: dayjs().format('MM/DD/YYYY'),
     });
+
+  const [
+    deletePedido,
+    {
+      isLoading: isDeleting,
+      isSuccess: isDeleteSuccess,
+      isError: isErrorDelete,
+      error: errorDelete,
+      reset: resetDelete,
+    },
+  ] = useDeletePedidoMutation();
 
   useEffect(() => {
     if (data && !Array.isArray(data)) {
@@ -55,6 +78,7 @@ const Page = () => {
               second: pedido.second,
               others: `Bebida: ${pedido.drink}, Postre: ${pedido.dessert}`,
               price: `$ ${pedido.price}`,
+              options: pedido,
             })) || []
           }
           error={isError ? String((error as any).errorMessage) : ''}
@@ -66,6 +90,7 @@ const Page = () => {
             second: 'Segundo',
             others: 'Otros',
             price: 'Precio',
+            options: 'Opciones',
           }}
           isFetching={isFetching}
           isLoading={isLoading}
@@ -114,6 +139,48 @@ const Page = () => {
               align: 'center',
             },
           }}
+          customRenderers={{
+            options: ({ options }) => {
+              return (
+                <Stack direction='row' spacing={1} justifyContent='center'>
+                  <DeleteButton
+                    onClick={async () => {
+                      setPedidoSelected(options);
+                      setOpenDialog(true);
+                    }}
+                  />
+                </Stack>
+              );
+            },
+          }}
+        />
+        <ConfirmDialog
+          open={openDialog}
+          onClose={async () => {
+            setOpenDialog(false);
+            await resetDelete();
+            await refetch();
+          }}
+          onAccept={async () => {
+            if (pedidoSelected) {
+              try {
+                await deletePedido({
+                  date: dayjs(pedidoSelected.date).format('MM-DD-YYYY'),
+                  clientId: pedidoSelected.clientId,
+                  restaurantId: pedidoSelected.restaurantId,
+                }).unwrap();
+              } catch (error) {
+                resetDelete();
+              }
+            }
+          }}
+          title='Cancelar este Pedido'
+          subtitle='¿Estás seguro de que quieres cancelar este pedido?'
+          successMessage='Pedido cancelado correctamente'
+          isSuccess={isDeleteSuccess}
+          errorMessage={String((errorDelete as any)?.response?.data?.message)}
+          loading={isDeleting}
+          iserror={isErrorDelete}
         />
       </Box>
     </SimplePage>

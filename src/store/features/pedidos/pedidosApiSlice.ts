@@ -63,6 +63,24 @@ export const pedidoApi = middlewareApi.injectEndpoints({
         }
       },
     }),
+
+    deletePedido: builder.mutation<
+      PedidoData,
+      { date: string; restaurantId: string; clientId: string }
+    >({
+      queryFn: async ({ date, restaurantId, clientId }) => {
+        try {
+          const { data } = await mainApi.delete<PedidoData>(
+            `${date}/${restaurantId}/${clientId}`
+          );
+          return { data };
+        } catch (error: any) {
+          console.log(error);
+          return { error };
+        }
+      },
+    }),
+
     getIsExistPedido: builder.query<
       boolean,
       {
@@ -90,5 +108,6 @@ export const pedidoApi = middlewareApi.injectEndpoints({
 export const {
   useGetPedidosQuery,
   useAddPedidoMutation,
+  useDeletePedidoMutation,
   useLazyGetIsExistPedidoQuery,
 } = pedidoApi;
