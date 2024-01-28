@@ -194,7 +194,6 @@ const Page = () => {
                   />
                   <DeleteButton
                     onClick={async () => {
-                      console.log;
                       await dispatch(setRestaurantSelected(options));
                       setOpenDialog(true);
                     }}
@@ -215,7 +214,7 @@ const Page = () => {
             if (restaurantSelected) {
               try {
                 await deleteUser({
-                  ruc: '',
+                  ruc: restaurantSelected.ruc,
                 }).unwrap();
               } catch (error) {
                 resetDelete();

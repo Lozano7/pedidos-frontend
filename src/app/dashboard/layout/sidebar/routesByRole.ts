@@ -26,7 +26,7 @@ export const routeAdmin = [
   },
   {
     navlabel: true,
-    subheader: 'Colaboradores',
+    subheader: 'Usuarios',
   },
   {
     id: uniqueId(),

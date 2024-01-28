@@ -75,6 +75,7 @@ const Page = () => {
     search: menuTable.search,
     startDate: startDate.format('MM/DD/YYYY'),
     endDate: endDate.format('MM/DD/YYYY'),
+    roles: role,
   });
 
   const [
