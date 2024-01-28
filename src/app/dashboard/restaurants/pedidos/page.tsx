@@ -9,9 +9,11 @@ import {
   setSoupsTableSearch,
 } from '@/store/features/restaurants/restaurantSlice';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
-import { Box } from '@mui/material';
+import { Box, IconButton, Stack, Tooltip } from '@mui/material';
+import { IconShare3 } from '@tabler/icons-react';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
+import MenuPedido from './components/MenuPedido';
 
 const Page = () => {
   const [pedidosData, setPedidosData] = useState<IPedidosResponse | null>(null);
@@ -31,6 +33,7 @@ const Page = () => {
         typeof window !== 'undefined'
           ? localStorage.getItem('restaurantId') || ''
           : '',
+      // date: dayjs(new Date()).format('MM/DD/YYYY'),
     });
 
   useEffect(() => {
@@ -51,27 +54,27 @@ const Page = () => {
               number: soupsTable.limit * (soupsTable.page - 1) + index + 1,
               id: `${pedido.clientId}`,
               name: `${pedido.nameClient}`,
+              date: `${pedido.date}`,
               type: pedido.typeMenu === 'N' ? 'Normal' : 'Dieta',
-              soup: pedido.soup,
-              second: pedido.second,
-              others: `Bebida: ${pedido.drink}, Postre: ${pedido.dessert}`,
               price: `$ ${pedido.price}`,
+              status: 'En cola',
+              options: pedido,
             })) || []
           }
           error={isError ? String((error as any).errorMessage) : ''}
           headers={{
             number: 'N°',
-            id: 'Identificación del cliente',
+            id: 'Id cliente',
             name: 'Nombre de cliente',
+            date: 'Fecha',
             type: 'Tipo de menu',
-            soup: 'Sopa',
-            second: 'Segundo',
-            others: 'Otros',
             price: 'Precio',
+            status: 'Estado',
+            options: 'Opciones',
           }}
           isFetching={isFetching}
           isLoading={isLoading}
-          keyExtractor={(row) => String(row.name)}
+          keyExtractor={(row) => String(row.id)}
           page={soupsTable.page}
           perPage={soupsTable.limit}
           search={soupsTable.search}
@@ -106,17 +109,46 @@ const Page = () => {
             type: {
               align: 'center',
             },
-            soup: {
-              align: 'center',
-            },
-            second: {
-              align: 'center',
-            },
-            others: {
+            date: {
               align: 'center',
             },
             price: {
               align: 'center',
+            },
+            status: {
+              align: 'center',
+            },
+            options: {
+              align: 'center',
+            },
+          }}
+          isCollapsible
+          CollapsibleItems={pedidosData?.data?.map((pedido) => (
+            <MenuPedido
+              key={pedido.clientId}
+              data={{
+                soup: pedido.soup,
+                second: pedido.second,
+                drink: pedido.drink,
+                dessert: pedido.dessert,
+              }}
+            />
+          ))}
+          customRenderers={{
+            options: ({ options }) => {
+              return (
+                <Stack direction='row' spacing={1} justifyContent='center'>
+                  <Tooltip title='Despachar'>
+                    <IconButton
+                      sx={{
+                        color: '#556cd6',
+                      }}
+                    >
+                      <IconShare3 />
+                    </IconButton>
+                  </Tooltip>
+                </Stack>
+              );
             },
           }}
         />

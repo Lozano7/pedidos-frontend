@@ -4,7 +4,16 @@ import CustomTextField from '@/app/dashboard/components/forms/theme-elements/Cus
 import { UserResponse } from '@/shared/interfaces/user.interface';
 import { loginFailure, loginSuccess } from '@/store/features/authSlice';
 import { useAppDispatch } from '@/store/hooks';
-import { Box, Button, Stack, Typography } from '@mui/material';
+import { Visibility, VisibilityOff } from '@mui/icons-material';
+import {
+  Box,
+  Button,
+  IconButton,
+  InputAdornment,
+  Stack,
+  TextField,
+  Typography,
+} from '@mui/material';
 import { useRouter } from 'next/navigation';
 
 import { useState } from 'react';
@@ -20,6 +29,7 @@ const AuthLogin = ({ title, subtitle, subtext }: loginType) => {
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [isError, setIsError] = useState(false);
   const [error, setError] = useState('');
@@ -60,6 +70,12 @@ const AuthLogin = ({ title, subtitle, subtext }: loginType) => {
       );
       setLoading(false);
     }
+  };
+
+  const handleMouseDownPassword = (
+    event: React.MouseEvent<HTMLButtonElement>
+  ) => {
+    event.preventDefault();
   };
 
   return (
@@ -105,15 +121,32 @@ const AuthLogin = ({ title, subtitle, subtext }: loginType) => {
           >
             Contraseña
           </Typography>
-          <CustomTextField
-            type='password'
-            variant='outlined'
+
+          <TextField
             fullWidth
-            value={password}
+            id='password'
+            name='password'
+            type={showPassword ? 'text' : 'password'}
+            defaultValue={password}
             onChange={(
               e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>
             ) => {
               setPassword(e.target.value);
+            }}
+            value={password}
+            InputProps={{
+              endAdornment: (
+                <InputAdornment position='end'>
+                  <IconButton
+                    aria-label='toggle password visibility'
+                    onClick={() => setShowPassword(!showPassword)}
+                    onMouseDown={handleMouseDownPassword}
+                    edge='end'
+                  >
+                    {showPassword ? <VisibilityOff /> : <Visibility />}
+                  </IconButton>
+                </InputAdornment>
+              ),
             }}
           />
         </Box>
@@ -149,25 +182,6 @@ const AuthLogin = ({ title, subtitle, subtext }: loginType) => {
             {error}
           </Typography>
         )}
-
-        <Box
-          sx={{
-            mt: 2,
-          }}
-        >
-          <Button
-            color='primary'
-            variant='outlined'
-            size='large'
-            fullWidth
-            component='a'
-            onClick={() => {
-              router.push('/auth/register');
-            }}
-          >
-            Registrarse
-          </Button>
-        </Box>
       </Box>
       {subtitle}
     </>

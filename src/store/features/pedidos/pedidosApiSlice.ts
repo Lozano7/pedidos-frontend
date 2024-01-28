@@ -17,9 +17,18 @@ export const pedidoApi = middlewareApi.injectEndpoints({
         all?: boolean;
         restaurantId?: string;
         clientId?: string;
+        date?: string;
       }
     >({
-      queryFn: async ({ limit, page, search, all, restaurantId, clientId }) => {
+      queryFn: async ({
+        limit,
+        page,
+        search,
+        all,
+        restaurantId,
+        clientId,
+        date,
+      }) => {
         try {
           const { data } = await mainApi.get<IPedidosResponse | PedidoData[]>(
             'pedidos',
@@ -31,6 +40,7 @@ export const pedidoApi = middlewareApi.injectEndpoints({
                 all,
                 restaurantId,
                 clientId,
+                date,
               },
             }
           );

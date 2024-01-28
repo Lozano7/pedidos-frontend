@@ -69,7 +69,7 @@ const Page = () => {
               <NumericalData
                 isLoading={isFetching}
                 title='Total de pedidos'
-                value={`${data?.totalPedidos || ''}`}
+                value={`${data?.totalPedidos || '0'}`}
                 Icon={() => <IconClipboardText size={24} />}
                 isIndicador
                 isIndicatorUp
@@ -80,7 +80,7 @@ const Page = () => {
               <NumericalData
                 isLoading={isFetching}
                 title='Pedidos Normales'
-                value={`${data?.cantidadNormal || ''}`}
+                value={`${data?.cantidadNormal || '0'}`}
                 Icon={() => <IconSoup size={24} />}
                 isIndicador
                 isIndicatorUp={
@@ -153,8 +153,10 @@ const Page = () => {
             <Grid item xs={12}>
               <NumericalData
                 isLoading={isFetching}
-                title={`${dataDashboard.restaurant.name}`}
-                value={`$${dataDashboard.restaurant.price}`}
+                title={`${
+                  dataDashboard.restaurant.name || 'Aun no se registran pedidos'
+                }`}
+                value={`$${dataDashboard.restaurant.price || '0'}`}
                 Icon={() => <IconSalad size={24} />}
                 isSubtileNormal
                 subtitle='Restaurante con más pedidos'

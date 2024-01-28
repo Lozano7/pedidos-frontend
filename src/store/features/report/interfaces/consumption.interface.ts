@@ -30,3 +30,10 @@ export interface Pedido {
   createdAt?: Date;
   updatedAt?: Date;
 }
+
+export interface IPedidoMenu {
+  soup: string;
+  second: string;
+  drink: string;
+  dessert: string;
+}

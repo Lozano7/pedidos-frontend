@@ -7,11 +7,11 @@ interface LogoUgType {
   style?: React.CSSProperties;
 }
 
-const LogoUg = ({ height = 100, width = 250, style }: LogoUgType) => {
+const LogoUg = ({ height = 100, width = 350, style }: LogoUgType) => {
   return (
     <Box display='flex' alignItems='center' justifyContent='center'>
       <Image
-        src='/images/logos/UgHorizontalColor.svg'
+        src='/images/logos/logo-viamatica.png'
         alt='logo'
         width={width}
         height={height}
