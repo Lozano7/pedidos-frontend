@@ -1,6 +1,6 @@
 import { AppBar, Box, IconButton, Stack, Toolbar, styled } from '@mui/material';
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 
 // components
 import { IconMenu } from '@tabler/icons-react';
@@ -15,6 +15,8 @@ const Header = ({ toggleMobileSidebar }: ItemType) => {
   // const lgUp = useMediaQuery((theme) => theme.breakpoints.up('lg'));
   // const lgDown = useMediaQuery((theme) => theme.breakpoints.down('lg'));
 
+  const [role, setRole] = useState<string[]>([]);
+
   const AppBarStyled = styled(AppBar)(({ theme }) => ({
     boxShadow: 'none',
     background: theme.palette.background.paper,
@@ -28,6 +30,12 @@ const Header = ({ toggleMobileSidebar }: ItemType) => {
     width: '100%',
     color: theme.palette.text.secondary,
   }));
+
+  useEffect(() => {
+    const rolesString = localStorage.getItem('userRoles');
+    const rolesParse = JSON.parse(rolesString || '[]');
+    setRole(rolesParse);
+  }, []);
 
   return (
     <AppBarStyled position='sticky' color='default'>
@@ -48,7 +56,7 @@ const Header = ({ toggleMobileSidebar }: ItemType) => {
 
         <Box flexGrow={1} />
         <Stack spacing={1} direction='row' alignItems='center'>
-          <Notification />
+          {role.includes('RESTAURANT') && <Notification />}
           <Profile />
         </Stack>
       </ToolbarStyled>

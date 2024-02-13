@@ -3,13 +3,14 @@ import { getProtocol } from '../helpers/urlHelpers';
 
 const protocol = getProtocol();
 
-const baseURL = `${protocol}://${process.env.NEXT_PUBLIC_API_URL}/api`;
+const baseURLAPI = `${protocol}://${process.env.NEXT_PUBLIC_API_URL}/api`;
+const baseURL = `${protocol}://${process.env.NEXT_PUBLIC_API_URL}`;
 
 const mainApi = axios.create();
 
 mainApi.interceptors.request.use(
   async function (config) {
-    config.baseURL = baseURL;
+    config.baseURL = baseURLAPI;
 
     const token = localStorage.getItem('x-token');
 
@@ -37,4 +38,4 @@ mainApi.interceptors.response.use(
   }
 );
 
-export { baseURL, mainApi };
+export { baseURL, baseURLAPI, mainApi };
