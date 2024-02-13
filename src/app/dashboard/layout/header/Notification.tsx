@@ -1,12 +1,9 @@
 'use client';
-import { useAppSelector } from '@/store/hooks';
-import { Avatar, Box, Button, IconButton, Menu } from '@mui/material';
-import { useRouter } from 'next/navigation';
+import { Badge, Box, IconButton, Menu } from '@mui/material';
+import { IconBellRinging } from '@tabler/icons-react';
 import { useState } from 'react';
 
-const Profile = () => {
-  const { user } = useAppSelector((state) => state.authReducer);
-
+const Notification = () => {
   const [anchorEl2, setAnchorEl2] = useState(null);
   const handleClick2 = (event: any) => {
     setAnchorEl2(event.currentTarget);
@@ -14,9 +11,6 @@ const Profile = () => {
   const handleClose2 = () => {
     setAnchorEl2(null);
   };
-
-  const router = useRouter();
-
   return (
     <Box>
       <IconButton
@@ -32,17 +26,11 @@ const Profile = () => {
         }}
         onClick={handleClick2}
       >
-        <Avatar
-          alt='profile-image'
-          sx={{
-            width: 35,
-            height: 35,
-          }}
-        />
+        <Badge variant='dot' color='primary'>
+          <IconBellRinging size='21' stroke='1.5' />
+        </Badge>
       </IconButton>
-      {/* ------------------------------------------- */}
-      {/* Message Dropdown */}
-      {/* ------------------------------------------- */}
+
       <Menu
         id='msgs-menu'
         anchorEl={anchorEl2}
@@ -58,21 +46,11 @@ const Profile = () => {
         }}
       >
         <Box mt={1} py={1} px={2}>
-          <Button
-            variant='outlined'
-            color='primary'
-            fullWidth
-            onClick={() => {
-              localStorage.removeItem('x-token');
-              router.push('/');
-            }}
-          >
-            Cerrar sesión
-          </Button>
+          Aqui va las notificaciones
         </Box>
       </Menu>
     </Box>
   );
 };
 
-export default Profile;
+export default Notification;
