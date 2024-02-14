@@ -236,6 +236,7 @@ const Page = () => {
                         dessert: menuForType.dessert,
                         drink: menuForType.drink,
                         price: menuForType.price,
+                        status: 'Pendiente',
                         second: menuForType.second,
                         soup: menuForType.soup,
                         typeMenu: menuForType.type,

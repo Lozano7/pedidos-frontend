@@ -1,4 +1,3 @@
-import DashboardCard from '@/app/dashboard/components/shared/DashboardCard';
 import { isPrimitive, objectKeys } from '@/helpers';
 import {
   CustomCellProperties,
@@ -427,313 +426,309 @@ export const SearchPaginatedTable = <T extends {}>({
   };
 
   return (
-    <DashboardCard>
-      <>
-        <Box sx={{ overflow: 'auto', width: { xs: '280px', sm: 'auto' } }}>
-          <Grid
-            container
-            justifyContent='space-between'
-            alignItems='center'
-            spacing={2}
-          >
-            <Grid item xs={12} sm={7} lg={6} sx={{ width: '100% !important' }}>
-              {showFilter && !hideToolbars && (
-                <DebounceInput
-                  autoFocus={Boolean(search)}
-                  minLength={2}
-                  debounceTimeout={300}
-                  onChange={({ target }) => {
-                    setPage(1);
-                    setSearchFirst(target.value);
-                    // setSearch(target.value);
-                  }}
-                  value={search}
-                  //element={TextField}
-                  /* eslint-disable */
-                  element={(props) => (
-                    <TextField
-                      style={{
-                        width: '100%',
-                      }}
-                      InputProps={{
-                        startAdornment: (
-                          <InputAdornment position='start'>
-                            <IconSearch fontSize='small' />
-                          </InputAdornment>
-                        ),
-                        endAdornment: (
-                          <InputAdornment position='end'>
-                            <IconButton
-                              size='small'
-                              onClick={() => {
-                                setSearchFirst('');
-                                setSearch('');
-                              }}
-                              {...(!search && {
-                                sx: { cursor: 'initial', opacity: 0 },
-                              })}
-                            >
-                              <IconX size={20} />
-                            </IconButton>
-                          </InputAdornment>
-                        ),
-                      }}
-                      placeholder={searchPlacehoder}
-                      variant='outlined'
-                      size='small'
-                      {...props}
-                    />
-                  )}
-                />
-              )}
-            </Grid>
-            <Grid
-              item
-              xs={12}
-              sm={!actBtnFullWith && 5}
-              lg={6}
-              sx={{ textAlign: 'right', width: '100% !important' }}
-            >
-              {ActionButtons}
-            </Grid>
-          </Grid>
-          <TableContainer
-            {...(tableProps && { ...tableProps.tableContainer })}
-            {...(replaceHeader &&
-              !tableProps?.tableContainer && { sx: { mt: 2 } })}
-          >
-            <Table
-              aria-label='simple table'
-              sx={{
-                whiteSpace: 'nowrap',
-                mt: 2,
-              }}
-            >
-              <TableHead
-                {...(tableProps && { ...tableProps.tableHead })}
-                style={{ position: 'sticky', top: 0, backgroundColor: '#fff' }}
-              >
-                <TableRow>
-                  {checkboxSelection && (
-                    <TableCell colSpan={caclNumColumns()}>
-                      <Grid
-                        container
-                        alignItems='center'
-                        sx={{
-                          border: 1,
-                          borderColor: 'primary.main',
-                          p: 2,
-                          borderRadius: '.6rem',
-                        }}
-                      >
-                        <Grid item>
-                          <Typography>
-                            Filas seleccionadas: &nbsp;&nbsp;&nbsp;
-                            <Badge
-                              badgeContent={
-                                rowsSelected.length ? rowsSelected.length : '0'
-                              }
-                              color='primary'
-                            />
-                            &nbsp;&nbsp;&nbsp;
-                          </Typography>
-                        </Grid>
-                        <Grid item>
-                          <RowsSelectedActions
-                            menuItems={rowsSelectedActions}
-                          />
-                        </Grid>
-                      </Grid>
-                    </TableCell>
-                  )}
-                </TableRow>
-                <TableRow {...(tableProps && { ...tableProps.tableHeadRows })}>
-                  {checkboxSelection && (
-                    <TableCell
-                      {...((tableProps && {
-                        ...tableProps.tableHeadCells,
-                      }) as any)}
-                    >
-                      <Checkbox
-                        checked={checkedAllRows}
-                        onChange={handleCheckedAllRows}
-                        inputProps={{ 'aria-label': 'controlled' }}
-                      />
-                    </TableCell>
-                  )}
-                  {isCollapsible ? (
-                    <TableCell
-                      {...((tableProps && {
-                        ...tableProps.tableHeadCells,
-                      }) as any)}
-                    />
-                  ) : null}
-                  <>
-                    {replaceHeader && { newHeader }}
-                    {!replaceHeader &&
-                      Object.keys(headers).map((key) => (
-                        <TableCell
-                          key={key}
-                          {...((tableProps && {
-                            ...tableProps.tableHeadCells,
-                          }) as any)}
-                          {...customHeadersCellsProperties?.[key as keyof T]}
-                        >
-                          <Grid
-                            container
-                            justifyContent='space-around'
-                            alignItems='center'
+    <>
+      <Box sx={{ overflow: 'auto', width: { xs: '280px', sm: 'auto' } }}>
+        <Grid
+          container
+          justifyContent='space-between'
+          alignItems='center'
+          spacing={2}
+        >
+          <Grid item xs={12} sm={7} lg={6} sx={{ width: '100% !important' }}>
+            {showFilter && !hideToolbars && (
+              <DebounceInput
+                autoFocus={Boolean(search)}
+                minLength={2}
+                debounceTimeout={300}
+                onChange={({ target }) => {
+                  setPage(1);
+                  setSearchFirst(target.value);
+                  // setSearch(target.value);
+                }}
+                value={search}
+                //element={TextField}
+                /* eslint-disable */
+                element={(props) => (
+                  <TextField
+                    style={{
+                      width: '100%',
+                    }}
+                    InputProps={{
+                      startAdornment: (
+                        <InputAdornment position='start'>
+                          <IconSearch fontSize='small' />
+                        </InputAdornment>
+                      ),
+                      endAdornment: (
+                        <InputAdornment position='end'>
+                          <IconButton
+                            size='small'
+                            onClick={() => {
+                              setSearchFirst('');
+                              setSearch('');
+                            }}
+                            {...(!search && {
+                              sx: { cursor: 'initial', opacity: 0 },
+                            })}
                           >
-                            <Grid item>
-                              <Typography
-                                sx={{
-                                  fontSize: '14px',
-                                  fontWeight: '800',
-                                }}
-                              >
-                                {headers[key as keyof T]}
-                              </Typography>
-                            </Grid>
-                            {Object.keys(listFilterArrows).some(
-                              (e) => e === key
-                            ) && (
-                              <Grid item>
-                                {/* <Grid item xs={6}> */}
-                                <IconArrowNarrowDown
-                                  style={{
-                                    color: 'inherit',
-                                    cursor: 'pointer',
-                                  }}
-                                  stroke={
-                                    filterArrow?.direction === 'asc' &&
-                                    filterArrow?.name ===
-                                      listFilterArrows[
-                                        key as keyof ListFilterArrow
-                                      ]
-                                      ? 2
-                                      : 1
-                                  }
-                                  size={18}
-                                  onClick={() =>
-                                    handleFilterArrowUp(
-                                      listFilterArrows[
-                                        key as keyof ListFilterArrow
-                                      ],
-                                      'asc',
-                                      listFilterArrows[
-                                        key as keyof ListFilterArrow
-                                      ]
-                                    )
-                                  }
-                                />
-                                <IconArrowNarrowUp
-                                  style={{
-                                    color: 'inherit',
-                                    cursor: 'pointer',
-                                  }}
-                                  stroke={
-                                    filterArrow?.direction === 'desc' &&
-                                    filterArrow?.name ===
-                                      listFilterArrows[
-                                        key as keyof ListFilterArrow
-                                      ]
-                                      ? 2
-                                      : 1
-                                  }
-                                  size={18}
-                                  onClick={() =>
-                                    handleFilterArrowDown(
-                                      listFilterArrows[
-                                        key as keyof ListFilterArrow
-                                      ],
-                                      'desc',
-                                      listFilterArrows[
-                                        key as keyof ListFilterArrow
-                                      ]
-                                    )
-                                  }
-                                />
-                              </Grid>
-                            )}
+                            <IconX size={20} />
+                          </IconButton>
+                        </InputAdornment>
+                      ),
+                    }}
+                    placeholder={searchPlacehoder}
+                    variant='outlined'
+                    size='small'
+                    {...props}
+                  />
+                )}
+              />
+            )}
+          </Grid>
+          <Grid
+            item
+            xs={12}
+            sm={!actBtnFullWith && 5}
+            lg={6}
+            sx={{ textAlign: 'right', width: '100% !important' }}
+          >
+            {ActionButtons}
+          </Grid>
+        </Grid>
+        <TableContainer
+          {...(tableProps && { ...tableProps.tableContainer })}
+          {...(replaceHeader &&
+            !tableProps?.tableContainer && { sx: { mt: 2 } })}
+        >
+          <Table
+            aria-label='simple table'
+            sx={{
+              whiteSpace: 'nowrap',
+              mt: 2,
+            }}
+          >
+            <TableHead
+              {...(tableProps && { ...tableProps.tableHead })}
+              style={{ position: 'sticky', top: 0, backgroundColor: '#fff' }}
+            >
+              <TableRow>
+                {checkboxSelection && (
+                  <TableCell colSpan={caclNumColumns()}>
+                    <Grid
+                      container
+                      alignItems='center'
+                      sx={{
+                        border: 1,
+                        borderColor: 'primary.main',
+                        p: 2,
+                        borderRadius: '.6rem',
+                      }}
+                    >
+                      <Grid item>
+                        <Typography>
+                          Filas seleccionadas: &nbsp;&nbsp;&nbsp;
+                          <Badge
+                            badgeContent={
+                              rowsSelected.length ? rowsSelected.length : '0'
+                            }
+                            color='primary'
+                          />
+                          &nbsp;&nbsp;&nbsp;
+                        </Typography>
+                      </Grid>
+                      <Grid item>
+                        <RowsSelectedActions menuItems={rowsSelectedActions} />
+                      </Grid>
+                    </Grid>
+                  </TableCell>
+                )}
+              </TableRow>
+              <TableRow {...(tableProps && { ...tableProps.tableHeadRows })}>
+                {checkboxSelection && (
+                  <TableCell
+                    {...((tableProps && {
+                      ...tableProps.tableHeadCells,
+                    }) as any)}
+                  >
+                    <Checkbox
+                      checked={checkedAllRows}
+                      onChange={handleCheckedAllRows}
+                      inputProps={{ 'aria-label': 'controlled' }}
+                    />
+                  </TableCell>
+                )}
+                {isCollapsible ? (
+                  <TableCell
+                    {...((tableProps && {
+                      ...tableProps.tableHeadCells,
+                    }) as any)}
+                  />
+                ) : null}
+                <>
+                  {replaceHeader && { newHeader }}
+                  {!replaceHeader &&
+                    Object.keys(headers).map((key) => (
+                      <TableCell
+                        key={key}
+                        {...((tableProps && {
+                          ...tableProps.tableHeadCells,
+                        }) as any)}
+                        {...customHeadersCellsProperties?.[key as keyof T]}
+                      >
+                        <Grid
+                          container
+                          justifyContent='space-around'
+                          alignItems='center'
+                        >
+                          <Grid item>
+                            <Typography
+                              sx={{
+                                fontSize: '14px',
+                                fontWeight: '800',
+                              }}
+                            >
+                              {headers[key as keyof T]}
+                            </Typography>
                           </Grid>
-                        </TableCell>
-                      ))}
-                  </>
-                </TableRow>
-              </TableHead>
-              {
-                //Body
-              }
-              <TableBody>
-                {isFetching
-                  ? renderSkeletonRows(perPage, numHeader)
-                  : renderRows()}
-                {data?.length === 0 &&
-                  !isFetching &&
-                  renderErrorOrEmptyRow(numHeader)}
-              </TableBody>
-              <TableFooter>
-                <TableRow>
-                  <TableCell colSpan={12} align='right'>
-                    <Box
+                          {Object.keys(listFilterArrows).some(
+                            (e) => e === key
+                          ) && (
+                            <Grid item>
+                              {/* <Grid item xs={6}> */}
+                              <IconArrowNarrowDown
+                                style={{
+                                  color: 'inherit',
+                                  cursor: 'pointer',
+                                }}
+                                stroke={
+                                  filterArrow?.direction === 'asc' &&
+                                  filterArrow?.name ===
+                                    listFilterArrows[
+                                      key as keyof ListFilterArrow
+                                    ]
+                                    ? 2
+                                    : 1
+                                }
+                                size={18}
+                                onClick={() =>
+                                  handleFilterArrowUp(
+                                    listFilterArrows[
+                                      key as keyof ListFilterArrow
+                                    ],
+                                    'asc',
+                                    listFilterArrows[
+                                      key as keyof ListFilterArrow
+                                    ]
+                                  )
+                                }
+                              />
+                              <IconArrowNarrowUp
+                                style={{
+                                  color: 'inherit',
+                                  cursor: 'pointer',
+                                }}
+                                stroke={
+                                  filterArrow?.direction === 'desc' &&
+                                  filterArrow?.name ===
+                                    listFilterArrows[
+                                      key as keyof ListFilterArrow
+                                    ]
+                                    ? 2
+                                    : 1
+                                }
+                                size={18}
+                                onClick={() =>
+                                  handleFilterArrowDown(
+                                    listFilterArrows[
+                                      key as keyof ListFilterArrow
+                                    ],
+                                    'desc',
+                                    listFilterArrows[
+                                      key as keyof ListFilterArrow
+                                    ]
+                                  )
+                                }
+                              />
+                            </Grid>
+                          )}
+                        </Grid>
+                      </TableCell>
+                    ))}
+                </>
+              </TableRow>
+            </TableHead>
+            {
+              //Body
+            }
+            <TableBody>
+              {isFetching
+                ? renderSkeletonRows(perPage, numHeader)
+                : renderRows()}
+              {data?.length === 0 &&
+                !isFetching &&
+                renderErrorOrEmptyRow(numHeader)}
+            </TableBody>
+            <TableFooter>
+              <TableRow>
+                <TableCell colSpan={12} align='right'>
+                  <Box
+                    sx={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'right',
+                    }}
+                  >
+                    <Typography
                       sx={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'right',
+                        fontSize: '13px',
+                        fontWeight: '400',
+                        mr: 1,
                       }}
                     >
-                      <Typography
-                        sx={{
-                          fontSize: '13px',
-                          fontWeight: '400',
-                          mr: 1,
-                        }}
-                      >
-                        {`Mostrando de 1 a ${perPage} de ${total} entradas`}
-                      </Typography>
-                      <Select
-                        value={perPage || 10}
-                        size='small'
-                        sx={{
-                          ml: 1,
-                          mr: 1,
-                        }}
-                        onChange={(e) => {
-                          setPerPage(Number(e.target.value));
-                          setPage(1);
-                        }}
-                      >
-                        <MenuItem value='10'>10</MenuItem>
-                        <MenuItem value='20'>20</MenuItem>
-                        <MenuItem value='30'>30</MenuItem>
-                      </Select>
-                    </Box>
-                  </TableCell>
-                </TableRow>
+                      {`Mostrando de 1 a ${perPage} de ${total} entradas`}
+                    </Typography>
+                    <Select
+                      value={perPage || 10}
+                      size='small'
+                      sx={{
+                        ml: 1,
+                        mr: 1,
+                      }}
+                      onChange={(e) => {
+                        setPerPage(Number(e.target.value));
+                        setPage(1);
+                      }}
+                    >
+                      <MenuItem value='10'>10</MenuItem>
+                      <MenuItem value='20'>20</MenuItem>
+                      <MenuItem value='30'>30</MenuItem>
+                    </Select>
+                  </Box>
+                </TableCell>
+              </TableRow>
 
-                <TableRow>
-                  <TableCell colSpan={6} align='center'>
-                    <Box
-                      sx={{
-                        display: 'flex',
-                        justifyContent: 'center',
+              <TableRow>
+                <TableCell colSpan={6} align='center'>
+                  <Box
+                    sx={{
+                      display: 'flex',
+                      justifyContent: 'center',
+                    }}
+                  >
+                    <Pagination
+                      count={Math.ceil(total / perPage) || 1}
+                      onChange={(e, page) => {
+                        setPage(page);
                       }}
-                    >
-                      <Pagination
-                        count={Math.ceil(total / perPage) || 1}
-                        onChange={(e, page) => {
-                          setPage(page);
-                        }}
-                      />
-                    </Box>
-                  </TableCell>
-                </TableRow>
-              </TableFooter>
-            </Table>
-          </TableContainer>
-        </Box>
-      </>
-    </DashboardCard>
+                    />
+                  </Box>
+                </TableCell>
+              </TableRow>
+            </TableFooter>
+          </Table>
+        </TableContainer>
+      </Box>
+    </>
   );
 };
 

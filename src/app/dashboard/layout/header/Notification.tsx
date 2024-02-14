@@ -23,16 +23,15 @@ const Notification = () => {
 
     socket.emit('join', localStorage.getItem('restaurantId'));
 
-    // Escuchar el evento 'notification'
-    socket.on('notification', (pedido) => {
-      console.log(pedido);
-    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
-    // Devuelve una función de limpieza para desconectar el socket cuando el componente se desmonta
-    return () => {
-      socket.disconnect();
-    };
-  }, [notifications]);
+  useEffect(() => {
+    socket.on('notification', (pedido) => {
+      console.log('Notificación recibida: ', pedido);
+      setNotifications((prev) => [...prev, pedido]);
+    });
+  }, []);
 
   return (
     <Box>
@@ -72,21 +71,28 @@ const Notification = () => {
           },
         }}
       >
-        <Box mt={1} py={1} px={2}>
-          {notifications.length ? (
-            notifications.map((pedido, index) => (
-              <div key={index}>
+        <Box p={2}>
+          {notifications.length > 0 ? (
+            notifications.map((pedido) => (
+              <div key={`${pedido._id}`}>
                 <p
                   style={{
-                    fontWeight: 'bold',
+                    fontSize: '12px',
                   }}
                 >
-                  {pedido.nameClient} ha realizado un nuevo pedido
+                  <strong>{`${pedido.nameClient} `}</strong> ha realizado un
+                  pedido
                 </p>
               </div>
             ))
           ) : (
-            <p>No hay notificaciones</p>
+            <p
+              style={{
+                fontWeight: 'bold',
+              }}
+            >
+              <i>No hay notificaciones</i>
+            </p>
           )}
         </Box>
       </Menu>

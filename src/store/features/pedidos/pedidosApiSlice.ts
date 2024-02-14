@@ -3,6 +3,7 @@ import { middlewareApi } from '@/middleware';
 import {
   IPedidoPayload,
   IPedidosResponse,
+  IUpdateStatusPedidoPayload,
   PedidoData,
 } from './interfaces/pedidos.interface';
 
@@ -64,6 +65,28 @@ export const pedidoApi = middlewareApi.injectEndpoints({
       },
     }),
 
+    updateStatusPedido: builder.mutation<
+      PedidoData,
+      IUpdateStatusPedidoPayload
+    >({
+      queryFn: async ({ dataPayload }) => {
+        const { status, date, restaurantId, clientId } = dataPayload;
+        try {
+          const { data } = await mainApi.put<PedidoData>(
+            `pedidos/${date}/${restaurantId}/${clientId}`,
+            {
+              status,
+              data: dataPayload,
+            }
+          );
+          return { data };
+        } catch (error: any) {
+          console.log(error);
+          return { error };
+        }
+      },
+    }),
+
     deletePedido: builder.mutation<
       PedidoData,
       { date: string; restaurantId: string; clientId: string }
@@ -71,7 +94,7 @@ export const pedidoApi = middlewareApi.injectEndpoints({
       queryFn: async ({ date, restaurantId, clientId }) => {
         try {
           const { data } = await mainApi.delete<PedidoData>(
-            `${date}/${restaurantId}/${clientId}`
+            `pedidos/${date}/${restaurantId}/${clientId}`
           );
           return { data };
         } catch (error: any) {
@@ -110,4 +133,5 @@ export const {
   useAddPedidoMutation,
   useDeletePedidoMutation,
   useLazyGetIsExistPedidoQuery,
+  useUpdateStatusPedidoMutation,
 } = pedidoApi;

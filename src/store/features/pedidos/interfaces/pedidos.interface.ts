@@ -18,6 +18,7 @@ export interface PedidoData {
   drink: string;
   dessert: string;
   price: number;
+  status: string;
   __v: number;
 }
 
@@ -33,5 +34,11 @@ export interface IPedidoPayload {
   drink: string;
   dessert: string;
   price: number | string;
+  status: string;
   roles: string[];
+}
+
+export interface IUpdateStatusPedidoPayload {
+  status: string;
+  dataPayload: PedidoData;
 }
