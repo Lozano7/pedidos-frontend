@@ -1,5 +1,6 @@
 import { mainApi } from '@/api/mainApi';
 import { middlewareApi } from '@/middleware';
+import dayjs from 'dayjs';
 import {
   IPedidoPayload,
   IPedidosResponse,
@@ -69,11 +70,12 @@ export const pedidoApi = middlewareApi.injectEndpoints({
       PedidoData,
       IUpdateStatusPedidoPayload
     >({
-      queryFn: async ({ dataPayload }) => {
-        const { status, date, restaurantId, clientId } = dataPayload;
+      queryFn: async ({ dataPayload, status }) => {
+        const { date, restaurantId, clientId } = dataPayload;
         try {
-          const { data } = await mainApi.put<PedidoData>(
-            `pedidos/${date}/${restaurantId}/${clientId}`,
+          const dateFormatted = dayjs(date).format('MM-DD-YYYY');
+          const { data } = await mainApi.patch<PedidoData>(
+            `pedidos/${dateFormatted}/${restaurantId}/${clientId}`,
             {
               status,
               data: dataPayload,

@@ -7,6 +7,7 @@ import {
   useGetPedidosQuery,
   useUpdateStatusPedidoMutation,
 } from '@/store/features/pedidos/pedidosApiSlice';
+import { setPedidosRestaurantSelect } from '@/store/features/pedidos/pedidosSlice';
 import {
   setSoupsTableLimit,
   setSoupsTablePage,
@@ -14,7 +15,7 @@ import {
 } from '@/store/features/restaurants/restaurantSlice';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import { Box, IconButton, Stack, Tooltip } from '@mui/material';
-import { IconShare3 } from '@tabler/icons-react';
+import { IconCheckbox } from '@tabler/icons-react';
 import dayjs from 'dayjs';
 import { useEffect, useState } from 'react';
 import MenuPedido from './components/MenuPedido';
@@ -162,9 +163,13 @@ const Page = () => {
                       sx={{
                         color: '#556cd6',
                       }}
-                      
+                      disabled={options.status === 'Despachado'}
+                      onClick={() => {
+                        setOpenDialog(true);
+                        dispatch(setPedidosRestaurantSelect(options));
+                      }}
                     >
-                      <IconShare3 />
+                      <IconCheckbox />
                     </IconButton>
                   </Tooltip>
                 </Stack>
