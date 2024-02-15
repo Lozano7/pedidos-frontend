@@ -86,10 +86,9 @@ const RestaurantFrom = () => {
           phone: values.phone,
           startOrderTime: dayjs(values.startOrderTime).format('HH:mm'),
           endOrderTime: dayjs(values.endOrderTime).format('HH:mm'),
-          deliveryTime: values.deliveryTime,
+          deliveryTime: '' + values.deliveryTime,
         });
       } else {
-        console.log('values', values);
         addRestaurant({
           name: values.name,
           ruc: values.ruc,
@@ -99,7 +98,7 @@ const RestaurantFrom = () => {
           phone: values.phone,
           startOrderTime: dayjs(values.startOrderTime).format('HH:mm'),
           endOrderTime: dayjs(values.endOrderTime).format('HH:mm'),
-          deliveryTime: values.deliveryTime,
+          deliveryTime: '' + values.deliveryTime,
         });
       }
     },
