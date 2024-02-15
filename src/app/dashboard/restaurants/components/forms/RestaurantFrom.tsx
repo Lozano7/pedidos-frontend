@@ -121,6 +121,7 @@ const RestaurantFrom = () => {
       setFieldValue('address', restaurantData.address);
       setFieldValue('status', restaurantData.status);
       setFieldValue('phone', restaurantData.phone);
+      setFieldValue('startOrderTime', restaurantData.startOrderTime);
 
       const startOrderTime = new Date();
       startOrderTime.setHours(
@@ -136,12 +137,7 @@ const RestaurantFrom = () => {
       );
       setFieldValue('endOrderTime', endOrderTime);
 
-      const deliveryTime = new Date();
-      deliveryTime.setHours(
-        Number(restaurantData.deliveryTime.split(':')[0]),
-        Number(restaurantData.deliveryTime.split(':')[1])
-      );
-      setFieldValue('deliveryTime', deliveryTime);
+      setFieldValue('deliveryTime', Number(restaurantData.deliveryTime));
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [restaurantData]);
@@ -289,9 +285,11 @@ const RestaurantFrom = () => {
                   onChange={(event, value) => {
                     setFieldValue('status', value?.value);
                   }}
-                  value={status.find(
-                    (option) => option.value === values.status
-                  )}
+                  value={
+                    values.status
+                      ? status.find((s) => s.value === values.status)
+                      : null
+                  }
                   renderInput={(params: any) => (
                     <TextField
                       {...params}
@@ -334,7 +332,7 @@ const RestaurantFrom = () => {
             </Grid>
 
             <Grid item xs={12} md={6} lg={6}>
-              <InputLabel>Tiempo de entrega</InputLabel>
+              <InputLabel>Tiempo de entrega en horas</InputLabel>
               <TextField
                 disabled={isLoadingRestaurantData}
                 type='number'
