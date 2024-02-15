@@ -89,6 +89,7 @@ const RestaurantFrom = () => {
           deliveryTime: values.deliveryTime,
         });
       } else {
+        console.log('values', values);
         addRestaurant({
           name: values.name,
           ruc: values.ruc,
@@ -336,7 +337,7 @@ const RestaurantFrom = () => {
               <TextField
                 disabled={isLoadingRestaurantData}
                 type='number'
-                placeholder='Ingrese el tiempo de entrega'
+                placeholder='Ingrese el tiempo de entrega en horas'
                 id='deliveryTime'
                 name='deliveryTime'
                 onChange={handleChange}
