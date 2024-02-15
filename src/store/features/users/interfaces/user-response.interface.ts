@@ -56,3 +56,11 @@ export interface IUserEditRequest {
   restaurantId: string;
   roles: string[];
 }
+
+export interface JSONPayload {
+  email: string;
+  sub: string;
+  roles: string[];
+  iat: number;
+  exp: number;
+}

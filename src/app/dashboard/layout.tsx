@@ -1,6 +1,9 @@
 'use client';
+import { JSONPayload } from '@/store/features/users/interfaces/user-response.interface';
 import { Box, Container, styled } from '@mui/material';
-import React, { useState } from 'react';
+import jwt from 'jsonwebtoken';
+import { redirect, useRouter } from 'next/navigation';
+import React, { useEffect, useState } from 'react';
 import Header from './layout/header/Header';
 import Sidebar from './layout/sidebar/Sidebar';
 
@@ -28,8 +31,28 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
+  const router = useRouter();
+
   const [isSidebarOpen, setSidebarOpen] = useState(true);
   const [isMobileSidebarOpen, setMobileSidebarOpen] = useState(false);
+  const [isValidateToken, setIsValidateToken] = useState(false);
+
+  useEffect(() => {
+    const token = localStorage.getItem('x-token');
+
+    if (token) {
+      const decodedToken: JSONPayload = jwt.decode(token) as JSONPayload;
+      if (decodedToken.roles.length === 0) {
+        setIsValidateToken(true);
+      }
+    } else {
+      setIsValidateToken(true);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+  // aqui redirigir a /
+  if (isValidateToken) redirect('/');
+
   return (
     <MainWrapper className='mainwrapper'>
       {/* ------------------------------------------- */}
