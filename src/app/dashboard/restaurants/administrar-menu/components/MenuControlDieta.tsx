@@ -52,19 +52,6 @@ export const MenuControlDieta = ({
 
   return (
     <>
-      <Grid container spacing={2}>
-        <Grid item xs={12}>
-          <Button
-            variant='outlined'
-            color='primary'
-            onClick={addComponent}
-            endIcon={<IconPlus />}
-          >
-            Agregar menu
-          </Button>
-        </Grid>
-      </Grid>
-
       {uuids.map((uuid, index) => (
         <>
           {
@@ -93,6 +80,19 @@ export const MenuControlDieta = ({
           />
         </>
       ))}
+
+      <Grid container spacing={2} mt={1}>
+        <Grid item xs={12}>
+          <Button
+            variant='outlined'
+            color='primary'
+            onClick={addComponent}
+            endIcon={<IconPlus />}
+          >
+            Agregar menu
+          </Button>
+        </Grid>
+      </Grid>
     </>
   );
 };

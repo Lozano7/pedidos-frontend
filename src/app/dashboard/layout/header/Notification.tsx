@@ -9,8 +9,6 @@ const Notification = () => {
   const [anchorEl2, setAnchorEl2] = useState(null);
   const [notifications, setNotifications] = useState<Pedido[]>([]);
 
-  console.log(notifications);
-
   const handleClick2 = (event: any) => {
     setAnchorEl2(event.currentTarget);
   };
@@ -19,8 +17,6 @@ const Notification = () => {
   };
 
   useEffect(() => {
-    console.log('Conectado al socket: ', socket);
-
     socket.emit('join', localStorage.getItem('restaurantId'));
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -28,7 +24,6 @@ const Notification = () => {
 
   useEffect(() => {
     socket.on('notification', (pedido) => {
-      console.log('Notificación recibida: ', pedido);
       setNotifications((prev) => [...prev, pedido]);
     });
   }, []);

@@ -31,16 +31,21 @@ const Page = () => {
 
   const dispatch = useAppDispatch();
   const { data, isLoading, isFetching, isSuccess, isError, error, refetch } =
-    useGetPedidosQuery({
-      page: pedidosRestaurantTable.page,
-      limit: pedidosRestaurantTable.limit,
-      search: pedidosRestaurantTable.search,
-      restaurantId:
-        typeof window !== 'undefined'
-          ? localStorage.getItem('restaurantId') || ''
-          : '',
-      date: dayjs(new Date()).format('MM/DD/YYYY'),
-    });
+    useGetPedidosQuery(
+      {
+        page: pedidosRestaurantTable.page,
+        limit: pedidosRestaurantTable.limit,
+        search: pedidosRestaurantTable.search,
+        restaurantId:
+          typeof window !== 'undefined'
+            ? localStorage.getItem('restaurantId') || ''
+            : '',
+        date: dayjs(new Date()).format('MM/DD/YYYY'),
+      },
+      {
+        refetchOnMountOrArgChange: true,
+      }
+    );
 
   const [
     updateStatusPedido,

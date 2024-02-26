@@ -1,8 +1,10 @@
 'use client';
+import { loginSuccess } from '@/store/features/authSlice';
 import { JSONPayload } from '@/store/features/users/interfaces/user-response.interface';
+import { useAppDispatch } from '@/store/hooks';
 import { Box, Container, styled } from '@mui/material';
 import jwt from 'jsonwebtoken';
-import { redirect, useRouter } from 'next/navigation';
+import { redirect } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
 import Header from './layout/header/Header';
 import Sidebar from './layout/sidebar/Sidebar';
@@ -31,7 +33,7 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const router = useRouter();
+  const dispatch = useAppDispatch();
 
   const [isSidebarOpen, setSidebarOpen] = useState(true);
   const [isMobileSidebarOpen, setMobileSidebarOpen] = useState(false);
@@ -43,6 +45,8 @@ export default function RootLayout({
     if (token) {
       const decodedToken: JSONPayload = jwt.decode(token) as JSONPayload;
       if (decodedToken.roles.length === 0) {
+        const { sub, exp, iat, ...others } = decodedToken;
+        dispatch(loginSuccess(others));
         setIsValidateToken(true);
       }
     } else {

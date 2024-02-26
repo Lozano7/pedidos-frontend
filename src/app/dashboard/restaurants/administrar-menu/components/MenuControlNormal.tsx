@@ -54,19 +54,6 @@ const MenuControlNormal = ({
 
   return (
     <>
-      <Grid container spacing={2}>
-        <Grid item xs={12}>
-          <Button
-            variant='outlined'
-            color='primary'
-            onClick={addComponent}
-            endIcon={<IconPlus />}
-          >
-            Agregar menu
-          </Button>
-        </Grid>
-      </Grid>
-
       {uuids.map((uuid, index) => (
         <>
           {
@@ -95,6 +82,19 @@ const MenuControlNormal = ({
           />
         </>
       ))}
+
+      <Grid container spacing={2} mt={1}>
+        <Grid item xs={12}>
+          <Button
+            variant='outlined'
+            color='primary'
+            onClick={addComponent}
+            endIcon={<IconPlus />}
+          >
+            Agregar menu
+          </Button>
+        </Grid>
+      </Grid>
     </>
   );
 };

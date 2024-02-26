@@ -58,9 +58,15 @@ export interface IUserEditRequest {
 }
 
 export interface JSONPayload {
-  email: string;
   sub: string;
-  roles: string[];
   iat: number;
   exp: number;
+  email: string;
+  identification: string;
+  roles: string[];
+  fullName: string;
+  name: string;
+  lastName: string;
+  access_token: string;
+  restaurantId: string;
 }
