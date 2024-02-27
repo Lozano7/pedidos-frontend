@@ -1,6 +1,7 @@
 'use client';
 import SimplePage from '@/components/sample-page/page';
 import ConfirmDialog from '@/components/shared/ConfirmDialog';
+import { LocalizationWrapper } from '@/components/shared/LocalizationWrapper';
 import DeleteButton from '@/components/shared/buttons/DeleteButton';
 import EditButton from '@/components/shared/buttons/EditButton';
 import SearchPaginatedTable from '@/components/shared/tables/SearchPaginatedTable';
@@ -15,7 +16,8 @@ import {
   setMenuTableSearch,
 } from '@/store/features/menu/menuSlice';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
-import { Button, Chip, Stack } from '@mui/material';
+import { Box, Button, Chip, InputLabel, Stack } from '@mui/material';
+import { DatePicker } from '@mui/x-date-pickers';
 import { IconPlus } from '@tabler/icons-react';
 import dayjs from 'dayjs';
 import { useRouter } from 'next/navigation';
@@ -42,7 +44,9 @@ const Page = () => {
   } = useGetMenusQuery({
     page: menuTable.page,
     limit: menuTable.limit,
-    search: menuTable.search,
+    search: menuTable.search
+      ? dayjs(menuTable.search).format('MM/DD/YYYY')
+      : '',
     restaurantId:
       typeof window !== 'undefined'
         ? localStorage.getItem('restaurantId') || ''
@@ -68,10 +72,41 @@ const Page = () => {
 
   return (
     <SimplePage
-      title='Menú del dia'
-      subtitle='En esta sección puedes registrar las opciones del menú del dia'
+      title='Administrar menú'
+      subtitle='En esta sección puedes visualizar, editar y eliminar los menús de tu restaurante.'
     >
       <>
+        <Box>
+          <Box
+            sx={{
+              display: 'flex',
+              justifyContent: 'flex-end',
+              mb: 2,
+            }}
+          >
+            <Button
+              variant='outlined'
+              startIcon={<IconPlus />}
+              onClick={() => {
+                router.push('/dashboard/restaurants/administrar-menu/create');
+              }}
+            >
+              Agregar
+            </Button>
+          </Box>
+          <Box>
+            <InputLabel>Filtre por fecha</InputLabel>
+            <LocalizationWrapper>
+              <DatePicker
+                value={menuTable.search || null}
+                //eslint-disable-next-line
+                onChange={(newValue) => {
+                  dispatch(setMenuTableSearch(newValue || ''));
+                }}
+              />
+            </LocalizationWrapper>
+          </Box>
+        </Box>
         <SearchPaginatedTable
           data={
             data
@@ -100,8 +135,9 @@ const Page = () => {
           keyExtractor={(row) => String(row.date)}
           page={menuTable.page}
           perPage={menuTable.limit}
-          search={menuTable.search}
-          searchPlacehoder='Buscar por la fecha del menú'
+          search=''
+          searchPlacehoder=''
+          showFilter={false}
           setPage={(page: number) => {
             dispatch(setMenuTablePage(page));
           }}
@@ -112,9 +148,7 @@ const Page = () => {
             // setSize
           }
           setSearch={
-            (search: string) => {
-              dispatch(setMenuTableSearch(search));
-            }
+            () => {}
             // setSearch
           }
           total={Number(!Array.isArray(menusData) ? menusData?.total : 0)}
@@ -123,17 +157,6 @@ const Page = () => {
           CollapsibleItems={data?.data?.map((menus) => (
             <MenuCollapseTable key={menus?.date} data={menus} />
           ))}
-          ActionButtons={
-            <Button
-              variant='contained'
-              startIcon={<IconPlus />}
-              onClick={() => {
-                router.push('/dashboard/restaurants/administrar-menu/create');
-              }}
-            >
-              Agregar
-            </Button>
-          }
           customDataCellsProperties={{
             number: {
               align: 'center',

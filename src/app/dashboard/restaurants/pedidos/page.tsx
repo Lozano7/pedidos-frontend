@@ -1,24 +1,27 @@
 'use client';
 import SimplePage from '@/components/sample-page/page';
 import ConfirmDialog from '@/components/shared/ConfirmDialog';
+import { LocalizationWrapper } from '@/components/shared/LocalizationWrapper';
 import SearchPaginatedTable from '@/components/shared/tables/SearchPaginatedTable';
 import { IPedidosResponse } from '@/store/features/pedidos/interfaces/pedidos.interface';
 import {
   useGetPedidosQuery,
   useUpdateStatusPedidoMutation,
 } from '@/store/features/pedidos/pedidosApiSlice';
-import { setPedidosRestaurantSelect } from '@/store/features/pedidos/pedidosSlice';
+import {
+  setPedidosRestaurantSelect,
+  setPedidosRestaurantTableSearch,
+} from '@/store/features/pedidos/pedidosSlice';
 import {
   setSoupsTableLimit,
   setSoupsTablePage,
-  setSoupsTableSearch,
 } from '@/store/features/restaurants/restaurantSlice';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
-import { Box, IconButton, Stack, Tooltip } from '@mui/material';
+import { Box, IconButton, InputLabel, Stack, Tooltip } from '@mui/material';
+import { DatePicker } from '@mui/x-date-pickers';
 import { IconCheckbox } from '@tabler/icons-react';
 import dayjs from 'dayjs';
 import { useEffect, useState } from 'react';
-import MenuPedido from './components/MenuPedido';
 
 const Page = () => {
   const [pedidosData, setPedidosData] = useState<IPedidosResponse | null>(null);
@@ -35,7 +38,9 @@ const Page = () => {
       {
         page: pedidosRestaurantTable.page,
         limit: pedidosRestaurantTable.limit,
-        search: pedidosRestaurantTable.search,
+        search: pedidosRestaurantTable.search
+          ? dayjs(pedidosRestaurantTable.search).format('MM/DD/YYYY')
+          : '',
         restaurantId:
           typeof window !== 'undefined'
             ? localStorage.getItem('restaurantId') || ''
@@ -69,6 +74,19 @@ const Page = () => {
       subtitle='En esta sección puedes ver los pedidos registrados en el restaurante el dia de hoy.'
     >
       <Box sx={{ mt: 3 }}>
+        <Box>
+          <InputLabel>Filtre por fecha</InputLabel>
+          <LocalizationWrapper>
+            <DatePicker
+              value={pedidosRestaurantTable.search || null}
+              //eslint-disable-next-line
+              onChange={(newValue) => {
+                dispatch(setPedidosRestaurantTableSearch(newValue || ''));
+              }}
+            />
+          </LocalizationWrapper>
+        </Box>
+
         <SearchPaginatedTable
           data={
             pedidosData?.data?.map((pedido, index) => ({
@@ -77,11 +95,9 @@ const Page = () => {
                   (pedidosRestaurantTable.page - 1) +
                 index +
                 1,
-              id: `${pedido.clientId}`,
-              name: `${pedido.nameClient}`,
+              id: `${pedido.nameClient} - ${pedido.clientId}`,
               date: `${pedido.date}`,
-              type: pedido.typeMenu === 'N' ? 'Normal' : 'Dieta',
-              price: `$ ${pedido.price}`,
+              menu: pedido,
               status: pedido.status,
               options: pedido,
             })) || []
@@ -89,11 +105,9 @@ const Page = () => {
           error={isError ? String((error as any).errorMessage) : ''}
           headers={{
             number: 'N°',
-            id: 'Id cliente',
-            name: 'Nombre de cliente',
+            id: 'Cliente',
             date: 'Fecha',
-            type: 'Tipo de menu',
-            price: 'Precio',
+            menu: 'Menú',
             status: 'Estado',
             options: 'Opciones',
           }}
@@ -102,7 +116,8 @@ const Page = () => {
           keyExtractor={(row) => String(row.id)}
           page={pedidosRestaurantTable.page}
           perPage={pedidosRestaurantTable.limit}
-          search={pedidosRestaurantTable.search}
+          search=''
+          showFilter={false}
           searchPlacehoder='Buscar por fecha (mes/día/año) o por su tipo de menu'
           setPage={(page: number) => {
             dispatch(setSoupsTablePage(page));
@@ -114,9 +129,7 @@ const Page = () => {
             // setSize
           }
           setSearch={
-            (search: string) => {
-              dispatch(setSoupsTableSearch(search));
-            }
+            (search: string) => {}
             // setSearch
           }
           total={Number(pedidosData?.total || 0)}
@@ -128,16 +141,7 @@ const Page = () => {
             id: {
               align: 'center',
             },
-            name: {
-              align: 'center',
-            },
-            type: {
-              align: 'center',
-            },
             date: {
-              align: 'center',
-            },
-            price: {
               align: 'center',
             },
             status: {
@@ -147,18 +151,6 @@ const Page = () => {
               align: 'center',
             },
           }}
-          isCollapsible
-          CollapsibleItems={pedidosData?.data?.map((pedido) => (
-            <MenuPedido
-              key={pedido.clientId}
-              data={{
-                soup: pedido.soup,
-                second: pedido.second,
-                drink: pedido.drink,
-                dessert: pedido.dessert,
-              }}
-            />
-          ))}
           customRenderers={{
             options: ({ options }) => {
               return (
@@ -190,6 +182,36 @@ const Page = () => {
                   >
                     {status}
                   </span>
+                </Stack>
+              );
+            },
+            menu: ({ menu }) => {
+              return (
+                <Stack
+                  direction='column'
+                  spacing={1}
+                  justifyContent='center'
+                  alignItems='center'
+                >
+                  <Box>
+                    Tipo de menú:{' '}
+                    <strong>{menu.typeMenu ? 'Normal' : 'Dieta'}</strong>
+                  </Box>
+                  <Box>
+                    Sopa: <strong> {menu.soup}</strong>{' '}
+                  </Box>
+                  <Box>
+                    Segundo: <strong>{menu.second}</strong>{' '}
+                  </Box>
+                  <Box>
+                    Postre: <strong>{menu.dessert}</strong>{' '}
+                  </Box>
+                  <Box>
+                    Bebida: <strong>{menu.drink}</strong>{' '}
+                  </Box>
+                  <Box>
+                    Precio: <strong>${menu.price}</strong>{' '}
+                  </Box>
                 </Stack>
               );
             },

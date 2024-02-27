@@ -69,4 +69,5 @@ export interface JSONPayload {
   lastName: string;
   access_token: string;
   restaurantId: string;
+  nameRestaurant: string;
 }

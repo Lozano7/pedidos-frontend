@@ -45,9 +45,10 @@ export default function RootLayout({
     if (token) {
       const decodedToken: JSONPayload = jwt.decode(token) as JSONPayload;
       if (decodedToken.roles.length === 0) {
+        setIsValidateToken(true);
+      } else {
         const { sub, exp, iat, ...others } = decodedToken;
         dispatch(loginSuccess(others));
-        setIsValidateToken(true);
       }
     } else {
       setIsValidateToken(true);

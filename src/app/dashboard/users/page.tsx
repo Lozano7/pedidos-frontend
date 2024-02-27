@@ -58,6 +58,23 @@ const Page = () => {
       subtitle='En esta sección puedes administrar los usuarios de la plataforma'
     >
       <Box sx={{ mt: 3 }}>
+        <Box
+          mb={2}
+          sx={{
+            display: 'flex',
+            justifyContent: 'flex-end',
+          }}
+        >
+          <Button
+            variant='outlined'
+            startIcon={<IconPlus />}
+            onClick={() => {
+              router.push('/dashboard/users/create');
+            }}
+          >
+            Agregar
+          </Button>
+        </Box>
         <SearchPaginatedTable
           data={
             users?.data?.map((client, index) => ({
@@ -102,17 +119,6 @@ const Page = () => {
           }
           total={Number(users?.total || 0)}
           numHeader={6}
-          ActionButtons={
-            <Button
-              variant='contained'
-              startIcon={<IconPlus />}
-              onClick={() => {
-                router.push('/dashboard/users/create');
-              }}
-            >
-              Agregar
-            </Button>
-          }
           customDataCellsProperties={{
             id: {
               align: 'center',

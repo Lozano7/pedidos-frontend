@@ -1,6 +1,7 @@
 'use client';
 import SimplePage from '@/components/sample-page/page';
 import ConfirmDialog from '@/components/shared/ConfirmDialog';
+import { LocalizationWrapper } from '@/components/shared/LocalizationWrapper';
 import DeleteButton from '@/components/shared/buttons/DeleteButton';
 import SearchPaginatedTable from '@/components/shared/tables/SearchPaginatedTable';
 import {
@@ -17,7 +18,8 @@ import {
   setSoupsTableSearch,
 } from '@/store/features/restaurants/restaurantSlice';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
-import { Box, Stack } from '@mui/material';
+import { Box, InputLabel, Stack } from '@mui/material';
+import { DatePicker } from '@mui/x-date-pickers';
 import dayjs from 'dayjs';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
@@ -37,7 +39,9 @@ const Page = () => {
     useGetPedidosQuery({
       page: soupsTable.page,
       limit: soupsTable.limit,
-      search: soupsTable.search,
+      search: soupsTable.search
+        ? dayjs(soupsTable.search).format('MM/DD/YYYY')
+        : '',
       clientId:
         typeof window !== 'undefined'
           ? localStorage.getItem('pedidos-user-identification') || ''
@@ -65,9 +69,26 @@ const Page = () => {
   return (
     <SimplePage
       title='Pedidos'
-      subtitle='En esta sección puedes ver los pedidos registrados en el restaurante'
+      subtitle='En esta sección puedes ver los pedidos que has realizado.'
     >
       <Box sx={{ mt: 3 }}>
+        <Box
+          sx={{
+            mb: 2,
+          }}
+        >
+          <InputLabel>Filtre por fecha</InputLabel>
+          <LocalizationWrapper>
+            <DatePicker
+              value={soupsTable.search || null}
+              //eslint-disable-next-line
+              onChange={(newValue) => {
+                dispatch(setSoupsTableSearch(newValue || ''));
+              }}
+            />
+          </LocalizationWrapper>
+        </Box>
+
         <SearchPaginatedTable
           data={
             pedidosData?.data?.map((pedido, index) => ({
@@ -97,7 +118,7 @@ const Page = () => {
           keyExtractor={(row) => String(row.name)}
           page={soupsTable.page}
           perPage={soupsTable.limit}
-          search={soupsTable.search}
+          search=''
           searchPlacehoder='Buscar por fecha (mes/día/año)'
           setPage={(page: number) => {
             dispatch(setSoupsTablePage(page));
@@ -109,9 +130,7 @@ const Page = () => {
             // setSize
           }
           setSearch={
-            (search: string) => {
-              dispatch(setSoupsTableSearch(search));
-            }
+            (search: string) => {}
             // setSearch
           }
           total={Number(pedidosData?.total || 0)}

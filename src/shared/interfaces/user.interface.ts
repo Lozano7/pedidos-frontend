@@ -7,4 +7,5 @@ export interface UserResponse {
   lastName: string;
   access_token: string;
   restaurantId: string;
+  nameRestaurant: string;
 }

@@ -66,6 +66,23 @@ const Page = () => {
       subtitle='En esta sección puedes administrar los segundos registradas en el restaurante'
     >
       <Box sx={{ mt: 3 }}>
+        <Box
+          mb={2}
+          sx={{
+            display: 'flex',
+            justifyContent: 'flex-end',
+          }}
+        >
+          <Button
+            variant='outlined'
+            startIcon={<IconPlus />}
+            onClick={() => {
+              router.push('/dashboard/restaurants/seconds/create');
+            }}
+          >
+            Agregar
+          </Button>
+        </Box>
         <SearchPaginatedTable
           data={
             secondsData?.data?.map((restaurant, index) => ({
@@ -106,17 +123,6 @@ const Page = () => {
           }
           total={Number(secondsData?.total || 0)}
           numHeader={11}
-          ActionButtons={
-            <Button
-              variant='contained'
-              startIcon={<IconPlus />}
-              onClick={() => {
-                router.push('/dashboard/restaurants/seconds/create');
-              }}
-            >
-              Agregar
-            </Button>
-          }
           customDataCellsProperties={{
             number: {
               align: 'center',

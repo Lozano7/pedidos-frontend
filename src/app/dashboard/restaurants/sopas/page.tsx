@@ -65,6 +65,23 @@ const Page = () => {
       subtitle='En esta sección puedes administrar las sopas registradas en el restaurante'
     >
       <Box sx={{ mt: 3 }}>
+        <Box
+          mb={2}
+          sx={{
+            display: 'flex',
+            justifyContent: 'flex-end',
+          }}
+        >
+          <Button
+            variant='outlined'
+            startIcon={<IconPlus />}
+            onClick={() => {
+              router.push('/dashboard/restaurants/sopas/create');
+            }}
+          >
+            Agregar
+          </Button>
+        </Box>
         <SearchPaginatedTable
           data={
             soupsData?.data?.map((restaurant, index) => ({
@@ -105,17 +122,6 @@ const Page = () => {
           }
           total={Number(soupsData?.total || 0)}
           numHeader={4}
-          ActionButtons={
-            <Button
-              variant='contained'
-              startIcon={<IconPlus />}
-              onClick={() => {
-                router.push('/dashboard/restaurants/sopas/create');
-              }}
-            >
-              Agregar
-            </Button>
-          }
           customDataCellsProperties={{
             number: {
               align: 'center',
