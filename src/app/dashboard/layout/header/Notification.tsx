@@ -1,13 +1,21 @@
 'use client';
-import { Pedido } from '@/store/features/report/interfaces/consumption.interface';
+import { setNotificacionPedidos } from '@/store/features/pedidos/pedidosSlice';
+import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import { socket } from '@/websocket';
 import { Badge, Box, IconButton, Menu } from '@mui/material';
 import { IconBellRinging } from '@tabler/icons-react';
+import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
 const Notification = () => {
   const [anchorEl2, setAnchorEl2] = useState(null);
-  const [notifications, setNotifications] = useState<Pedido[]>([]);
+  const { notificacionPedidos } = useAppSelector(
+    (state) => state.pedidoReducer
+  );
+
+  const router = useRouter();
+
+  const dispatch = useAppDispatch();
 
   const handleClick2 = (event: any) => {
     setAnchorEl2(event.currentTarget);
@@ -24,8 +32,10 @@ const Notification = () => {
 
   useEffect(() => {
     socket.on('notification', (pedido) => {
-      setNotifications((prev) => [...prev, pedido]);
+      //setNotifications((prev) => [...prev, pedido]);
+      dispatch(setNotificacionPedidos([...notificacionPedidos, pedido]));
     });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
@@ -43,8 +53,8 @@ const Notification = () => {
         }}
         onClick={handleClick2}
       >
-        {notifications && notifications.length > 0 ? (
-          <Badge badgeContent={notifications.length} color='error'>
+        {notificacionPedidos && notificacionPedidos.length > 0 ? (
+          <Badge badgeContent={notificacionPedidos.length} color='error'>
             <IconBellRinging />
           </Badge>
         ) : (
@@ -67,9 +77,22 @@ const Notification = () => {
         }}
       >
         <Box p={2}>
-          {notifications.length > 0 ? (
-            notifications.map((pedido) => (
-              <div key={`${pedido._id}`}>
+          {notificacionPedidos.length > 0 ? (
+            notificacionPedidos.map((pedido) => (
+              <Box
+                key={`${pedido._id}`}
+                sx={{
+                  cursor: 'pointer',
+                  '&:hover': {
+                    backgroundColor: '#f5f5f5',
+                  },
+                }}
+                onClick={() => {
+                  router.push(`/dashboard/restaurants/pedidos`);
+                  handleClose2();
+                  dispatch(setNotificacionPedidos([]));
+                }}
+              >
                 <p
                   style={{
                     fontSize: '12px',
@@ -78,7 +101,7 @@ const Notification = () => {
                   <strong>{`${pedido.nameClient} `}</strong> ha realizado un
                   pedido
                 </p>
-              </div>
+              </Box>
             ))
           ) : (
             <p

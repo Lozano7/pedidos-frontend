@@ -1,4 +1,5 @@
 import { PayloadAction, createSlice } from '@reduxjs/toolkit';
+import { Pedido } from '../report/interfaces/consumption.interface';
 import { PedidoData } from './interfaces/pedidos.interface';
 
 interface PedidosState {
@@ -8,6 +9,7 @@ interface PedidosState {
     search: string;
   };
   pedidosRestaurantSelect: PedidoData | null;
+  notificacionPedidos: Pedido[];
 }
 
 const pedido: PedidosState = {
@@ -17,6 +19,7 @@ const pedido: PedidosState = {
     search: '',
   },
   pedidosRestaurantSelect: null,
+  notificacionPedidos: [],
 };
 
 const pedidoSlice = createSlice({
@@ -35,6 +38,9 @@ const pedidoSlice = createSlice({
     setPedidosRestaurantSelect(state, action: PayloadAction<PedidoData>) {
       state.pedidosRestaurantSelect = action.payload;
     },
+    setNotificacionPedidos(state, action: PayloadAction<Pedido[]>) {
+      state.notificacionPedidos = action.payload;
+    },
   },
 });
 
@@ -43,6 +49,7 @@ export const {
   setPedidosRestaurantTableLimit,
   setPedidosRestaurantTableSearch,
   setPedidosRestaurantSelect,
+  setNotificacionPedidos,
 } = pedidoSlice.actions;
 
 export default pedidoSlice.reducer;

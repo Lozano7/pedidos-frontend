@@ -9,6 +9,7 @@ import {
   useUpdateStatusPedidoMutation,
 } from '@/store/features/pedidos/pedidosApiSlice';
 import {
+  setNotificacionPedidos,
   setPedidosRestaurantSelect,
   setPedidosRestaurantTableSearch,
 } from '@/store/features/pedidos/pedidosSlice';
@@ -17,16 +18,48 @@ import {
   setSoupsTablePage,
 } from '@/store/features/restaurants/restaurantSlice';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
-import { Box, IconButton, InputLabel, Stack, Tooltip } from '@mui/material';
+import { Close } from '@mui/icons-material';
+import {
+  Box,
+  Button,
+  IconButton,
+  InputLabel,
+  Snackbar,
+  Stack,
+  Tooltip,
+} from '@mui/material';
 import { DatePicker } from '@mui/x-date-pickers';
 import { IconCheckbox } from '@tabler/icons-react';
 import dayjs from 'dayjs';
 import { useEffect, useState } from 'react';
 
 const Page = () => {
+  const { notificacionPedidos } = useAppSelector(
+    (state) => state.pedidoReducer
+  );
+
   const [pedidosData, setPedidosData] = useState<IPedidosResponse | null>(null);
 
   const [openDialog, setOpenDialog] = useState(false);
+
+  const [open, setOpen] = useState(false);
+
+  const handleClose = (
+    event: React.SyntheticEvent | Event,
+    reason?: string
+  ) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+
+    setOpen(false);
+  };
+
+  const handleUpdateTable = () => {
+    setOpen(false);
+    dispatch(setNotificacionPedidos([]));
+    refetch();
+  };
 
   const { pedidosRestaurantTable, pedidosRestaurantSelect } = useAppSelector(
     (state) => state.pedidoReducer
@@ -61,6 +94,31 @@ const Page = () => {
       isError: isErrorEdit,
     },
   ] = useUpdateStatusPedidoMutation();
+
+  const action = (
+    <>
+      <Button color='secondary' size='small' onClick={handleUpdateTable}>
+        Actualizar
+      </Button>
+      <IconButton
+        size='small'
+        aria-label='close'
+        color='inherit'
+        onClick={handleClose}
+      >
+        <Close fontSize='small' />
+      </IconButton>
+    </>
+  );
+
+  useEffect(() => {
+    if (notificacionPedidos.length > 0) {
+      if (!open) setOpen(true);
+    } else {
+      setOpen(false);
+    }
+    // eslint-disable-next-line
+  }, [notificacionPedidos]);
 
   useEffect(() => {
     if (data && !Array.isArray(data)) {
@@ -216,6 +274,13 @@ const Page = () => {
               );
             },
           }}
+        />
+        <Snackbar
+          open={open}
+          anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+          onClose={handleClose}
+          message='Nuevo pedido recibido'
+          action={action}
         />
         <ConfirmDialog
           open={openDialog}
