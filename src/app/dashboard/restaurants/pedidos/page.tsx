@@ -104,7 +104,7 @@ const Page = () => {
         size='small'
         aria-label='close'
         color='inherit'
-        onClick={handleClose}
+        onClick={handleUpdateTable}
       >
         <Close fontSize='small' />
       </IconButton>
