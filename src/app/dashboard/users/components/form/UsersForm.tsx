@@ -87,7 +87,7 @@ const UsersForm = () => {
           name: values.name,
           lastName: values.lastName,
           identification: values.identification,
-          restaurantId: values.restaurantId.ruc,
+          restaurantId: values.restaurantId.ruc || '',
           roles: values.roles.map((role: any) => role.keyword),
         });
       } else {
@@ -97,7 +97,7 @@ const UsersForm = () => {
           name: values.name,
           lastName: values.lastName,
           identification: values.identification,
-          restaurantId: values.restaurantId.ruc,
+          restaurantId: values.restaurantId.ruc || '',
           roles: values.roles.map((role: any) => role.keyword),
         });
       }
