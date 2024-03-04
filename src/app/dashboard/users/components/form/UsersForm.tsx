@@ -198,17 +198,16 @@ const UsersForm = () => {
       <form onSubmit={handleSubmit}>
         <Grid container direction='column' xs={12} spacing={2} p={2}>
           <Grid item xs={12} md={6} lg={6}>
-            {isSuccess ||
-              (isEditSuccess && (
-                <SuccessAlert
-                  message={
-                    id
-                      ? 'Usuario editado correctamente'
-                      : 'Usuario creado correctamente'
-                  }
-                  handleDismiss={() => reset()}
-                />
-              ))}
+            {(isSuccess || isEditSuccess) && (
+              <SuccessAlert
+                message={
+                  id
+                    ? 'Usuario editado correctamente'
+                    : 'Usuario creado correctamente'
+                }
+                handleDismiss={() => reset()}
+              />
+            )}
             {(isError || isEditError) && (
               <ErrorAlert
                 message={
